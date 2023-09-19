@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/uberClone/backend/common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uberClone/backend/driver/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uberClone/backend/notification/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uberClone/backend/passenger/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uberClone/backend/rider/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uberClone/backend/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uberClone/backend/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/uberClone/backend/web/src/main/java" charset="UTF-8" />
+  </component>
+</project>

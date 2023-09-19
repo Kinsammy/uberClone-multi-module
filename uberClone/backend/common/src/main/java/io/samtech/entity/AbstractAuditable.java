@@ -1,0 +1,26 @@
+package io.samtech.entity;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.lang.Nullable;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+@Setter
+@Getter
+public abstract class AbstractAuditable <U extends Serializable> implements Serializable {
+    @CreatedBy
+    protected @Nullable U createdBy;
+    @CreatedDate
+    protected @Nullable LocalDateTime createdDate;
+    @LastModifiedBy
+    protected @Nullable U lastModifiedBy;
+    @LastModifiedDate
+    protected @Nullable LocalDateTime lastModifiedDate;
+
+}
