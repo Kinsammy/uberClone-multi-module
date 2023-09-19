@@ -1,0 +1,20 @@
+version: '3'
+
+volumes:
+  postgres:
+
+
+services:
+  postgres:
+    image: samtech/postgres:latest
+    container_name: postgres
+    hostname: postgres
+    restart: unless-stopped
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=samtech
+      - POSTGRES_PASSWORD=samtech
+    volumes:
+      - postgres:/var/lib/postgresql/samtechdata

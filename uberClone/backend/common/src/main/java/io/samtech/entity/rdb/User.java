@@ -2,14 +2,19 @@ package io.samtech.entity.rdb;
 
 import io.samtech.constants.CommonConstants;
 import io.samtech.security.SecuredUser;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import one.util.streamex.StreamEx;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static io.samtech.constants.CommonConstants.EntityName.USER;
@@ -24,6 +29,7 @@ public class User extends AbstractJdbcEntity<Long> implements SecuredUser {
     private String preferredUsername;
 
     private String password;
+
     private String rawPassword;
 
     private String email;
@@ -57,73 +63,96 @@ public class User extends AbstractJdbcEntity<Long> implements SecuredUser {
 
     @Transient
     private Set<Role> roles = new HashSet<>();
-    @Override
-    public String getUsername() {
-        return null;
+
+    @Transient
+    private Set<Group> groups = new HashSet<>();
+
+    @MappedCollection(idColumn = "user_id")
+    private Set<UserRoleRef> roleRefs = new HashSet<>();
+
+    @MappedCollection(idColumn = "user_id")
+    private Set<UserGroupRef> groupRefs = new HashSet<>();
+
+    @Transient
+    private Set<String> authorities = new HashSet<>();
+
+    public User() {
     }
 
-    @Override
-    public String getPreferredUsername() {
-        return null;
+    @Builder
+    public User(Long id, String username, String preferredUsername, String password, String rawPassword, String email,Set<Profile> profile,
+                Integer emailVerified, String familyName, String middleName, String givenName,
+                String name, String unsigned_name, String phoneNumber, Integer phoneNumberVerified,
+                Integer gender, LocalDate birthdate, Integer enabled, Integer locked, Set<Role> roles,
+                Set<Group> groups, Set<UserRoleRef> roleRefs, Set<UserGroupRef> groupRefs, Set<String> authorities) {
+        this.id = id;
+        this.username = username;
+        this.preferredUsername = preferredUsername;
+        this.password = password;
+        this.rawPassword = rawPassword;
+        this.email = email;
+        this.emailVerified = emailVerified;
+        this.familyName = familyName;
+        this.middleName = middleName;
+        this.givenName = givenName;
+        this.profile = Objects.requireNonNullElse(profile, new HashSet<>());
+        this.name = name;
+        this.unsigned_name = unsigned_name;
+        this.phoneNumber = phoneNumber;
+        this.phoneNumberVerified = Objects.requireNonNullElse(phoneNumberVerified, CommonConstants.EntityStatus.UNVERIFIED);
+        this.gender = gender;
+        this.birthdate = birthdate;
+        this.enabled = Objects.requireNonNullElse(enabled, CommonConstants.EntityStatus.DISABLED);
+        this.locked = Objects.requireNonNullElse(locked, CommonConstants.EntityStatus.LOCKED);
+        this.roles = Objects.requireNonNullElse(roles, new HashSet<>());
+        this.groups = Objects.requireNonNullElse(groups, new HashSet<>());
+        this.roleRefs = Objects.requireNonNullElse(roleRefs, fromRoles(roles));
+        this.groupRefs = Objects.requireNonNullElse(groupRefs, fromGroups(groups));
+        this.authorities = Objects.requireNonNullElse(authorities, new HashSet<>());
     }
 
-    @Override
-    public String getPassword() {
-        return null;
+    private void setAuthorities(Set<String> authorities) {
+        this.authorities = authorities;
     }
 
-    @Override
-    public String getEmail() {
-        return null;
+    private Set<UserRoleRef> fromRoles(Collection<Role> roles) {
+        if (CollectionUtils.isEmpty(roles)) return new HashSet<>();
+        return StreamEx.of(roles)
+                .map(Role::getId)
+                .map(UserRoleRef::new)
+                .toSet();
     }
 
-    @Override
-    public String getFamilyName() {
-        return null;
+    private Set<UserGroupRef> fromGroups(Collection<Group> groups) {
+        if (CollectionUtils.isEmpty(groups)) return new HashSet<>();
+        return StreamEx.of(groups)
+                .map(Group::getId)
+                .map(UserGroupRef::new)
+                .toSet();
     }
 
-    @Override
-    public String getMiddleName() {
-        return null;
+    public Set<Long> roleIds() {
+        if (CollectionUtils.isEmpty(roleRefs)) return new HashSet<>();
+        return StreamEx.of(roleRefs)
+                .map(UserRoleRef::getRoleId)
+                .toImmutableSet();
     }
 
-    @Override
-    public String getGivenName() {
-        return null;
+
+    public Set<Long> groupIds() {
+        if (CollectionUtils.isEmpty(groupRefs)) return new HashSet<>();
+        return StreamEx.of(groupRefs)
+                .map(UserGroupRef::getGroupId)
+                .toImmutableSet();
     }
 
-    @Override
-    public String getName() {
-        return null;
-    }
-
-    @Override
-    public String getPhoneNumber() {
-        return null;
-    }
-
-    @Override
-    public Integer getGender() {
-        return null;
-    }
-
-    @Override
-    public LocalDate getBirthdate() {
-        return null;
-    }
-
-    @Override
-    public Integer getEnabled() {
-        return null;
-    }
-
-    @Override
-    public Integer getLocked() {
-        return null;
-    }
-
-    @Override
     public Set<String> getAuthorityNames() {
-        return null;
+        if (CollectionUtils.isEmpty(roles)) return new HashSet<>();
+        return StreamEx.of(roles)
+                .map(Role::getAuthorities)
+                .flatMap(Collection::stream)
+                .map(Authority::getName)
+                .toImmutableSet();
     }
+
 }
