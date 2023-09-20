@@ -21,7 +21,8 @@
 		<module>web</module>
 		<module>rider</module>
 		<module>common</module>
-	</modules>
+        <module>location</module>
+    </modules>
     <properties>
 		<java.version>17</java.version>
 	</properties>

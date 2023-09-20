@@ -16,7 +16,7 @@ import static io.samtech.constants.CommonConstants.EntityName.PROFILE;
 @Table(value = PROFILE)
 public class Profile extends AbstractJdbcEntity<Long>{
     private String type;
-    private int isActive;
+    private int isActivated;
     private int status;
     private Long userId;
 

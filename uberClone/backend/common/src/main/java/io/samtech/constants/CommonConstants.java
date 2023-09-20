@@ -1,6 +1,8 @@
 package io.samtech.constants;
 
 public abstract class CommonConstants {
+
+
     public static abstract class EntityName {
         public static final String USER = "user";
         public static final String PROFILE = "profile";
@@ -10,6 +12,8 @@ public abstract class CommonConstants {
         public static final String ROLE_AUTHORITY = "role_authorities";
         public static final String GROUP = "group";
         public static final String GROUP_MEMBER = "group_members";
+        public static final String FEATURE = "features";
+
 
     }
 
@@ -35,6 +39,10 @@ public abstract class CommonConstants {
         public static final Integer VERIFIED = 1;
 
         public static final Integer UNVERIFIED = 0;
+    }
+
+    public static abstract class FeatureType {
+        public static final Integer APP = 2;
     }
 
 }
