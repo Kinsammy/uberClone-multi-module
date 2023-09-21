@@ -12,6 +12,7 @@
         <module name="common" />
         <module name="passenger" />
         <module name="web" />
+        <module name="location" />
         <module name="rider" />
       </profile>
     </annotationProcessing>
@@ -21,6 +22,7 @@
       <module name="backend" options="" />
       <module name="common" options="-parameters" />
       <module name="driver" options="-parameters" />
+      <module name="location" options="-parameters" />
       <module name="notification" options="-parameters" />
       <module name="passenger" options="-parameters" />
       <module name="rider" options="-parameters" />

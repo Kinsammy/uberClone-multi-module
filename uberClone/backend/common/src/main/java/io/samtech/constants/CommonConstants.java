@@ -2,7 +2,6 @@ package io.samtech.constants;
 
 public abstract class CommonConstants {
 
-
     public static abstract class EntityName {
         public static final String USER = "user";
         public static final String PROFILE = "profile";
@@ -43,6 +42,12 @@ public abstract class CommonConstants {
 
     public static abstract class FeatureType {
         public static final Integer APP = 2;
+    }
+
+    public static abstract class Role {
+        public static final String DEFAULT_ROLE_BASIC = "BASIC";
+
+        public static final String DEFAULT_ROLE_ADMIN = "ADMIN";
     }
 
 }
