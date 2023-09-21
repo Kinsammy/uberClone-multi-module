@@ -14,6 +14,6 @@ public class DataProcessor {
     }
 
     private static String joins(String delimiter, String... args) {
-        return StreamEx.of(args).filter(Objects::nonNull).joining(delimiter)
+        return StreamEx.of(args).filter(Objects::nonNull).joining(delimiter);
     }
 }
