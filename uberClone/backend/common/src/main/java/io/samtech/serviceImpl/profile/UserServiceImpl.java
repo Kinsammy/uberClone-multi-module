@@ -15,6 +15,7 @@ import io.samtech.serviceApi.profille.UserHandlerServiceApi;
 import io.samtech.serviceApi.role.RoleService;
 import io.samtech.serviceApi.user.UserService;
 import io.samtech.utils.DataProcessor;
+import io.samtech.utils.PasswordGeneratorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import one.util.streamex.StreamEx;
@@ -152,7 +153,11 @@ public class UserServiceImpl implements UserService {
                 .toImmutableSet();
 
         Set<Role> roles = roleService.findAllActiveByIds(filteredRoleIds);
-//        user.setRoles(roles); final String password = PasswordGeneratorUtils.generateStrongPassword();
+        user.setRoles(roles);
+        final String password = PasswordGeneratorUtils.generateStrongPassword();
+        user.setRawPassword(password);
+        user.setLocked(CommonConstants.EntityStatus.UNLOCKED);
+        createUserInternal(user);
 
     }
 
