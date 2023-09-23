@@ -50,4 +50,10 @@ public abstract class CommonConstants {
         public static final String DEFAULT_ROLE_ADMIN = "ADMIN";
     }
 
+    public static abstract class User {
+        public static final Long SYSTEM_ID = 0L;
+
+        public static final Long ANONYMOUS_ID = -1L;
+    }
+
 }
