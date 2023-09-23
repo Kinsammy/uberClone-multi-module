@@ -1,6 +1,7 @@
 package io.samtech.serviceImpl.profile;
 
 import com.naharoo.commons.mapstruct.MappingFacade;
+import io.samtech.application.event.publisher.UserEventPublisher;
 import io.samtech.constants.CommonConstants;
 import io.samtech.dto.request.CreateUserRequest;
 import io.samtech.dto.request.RegisterUserRequest;
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private UserHandlerServiceApi userHandlerServiceApi;
     private final ModelMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final UserEventPublisher userEventPublisher;
 
     @Override
     public void createProfileTypeUser(User user) {
@@ -158,6 +160,8 @@ public class UserServiceImpl implements UserService {
         user.setRawPassword(password);
         user.setLocked(CommonConstants.EntityStatus.UNLOCKED);
         createUserInternal(user);
+
+        userEventPublisher.publishVerificationEvent(user);
 
     }
 

@@ -12,4 +12,6 @@ public interface iEmailNotificationService {
     CompletableFuture<MailResponse> sendMail(EMail eMail) throws UnirestException;
 
     CompletableFuture<MailResponse> sendSms(SmsRequest smsRequest) throws UnirestException, ApiException;
+
+
 }
