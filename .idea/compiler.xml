@@ -8,8 +8,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="notification" />
-        <module name="driver" />
         <module name="common" />
+        <module name="driver" />
         <module name="passenger" />
         <module name="web" />
         <module name="location" />
