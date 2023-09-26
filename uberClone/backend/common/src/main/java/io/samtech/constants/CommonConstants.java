@@ -12,7 +12,8 @@ public abstract class CommonConstants {
         public static final String GROUP = "group";
         public static final String GROUP_MEMBER = "group_members";
         public static final String FEATURE = "features";
-
+        public static final String ACCESS_TOKEN = "access_tokens";
+        public static final String REFRESH_TOKEN = "refresh_tokens";
 
     }
 
@@ -54,6 +55,15 @@ public abstract class CommonConstants {
         public static final Long SYSTEM_ID = 0L;
 
         public static final Long ANONYMOUS_ID = -1L;
+    }
+
+    public static abstract class TokenAudience {
+        public static final String ACCESS_TOKEN ="ACC";
+        public static final String REFRESH_TOKEN = "REF";
+    }
+
+    public static abstract class RegexPatterns {
+        public static final String PHONE_NUMBER_PATTERN = "0[789][01][0-9]{8}";
     }
 
 }
