@@ -131,6 +131,36 @@ CREATE TABLE IF NOT EXISTS user_profile(
 
 
 );
+
+
+CREATE TABLE IF NOT EXISTS access_tokens (
+                                        id VARCHAR(255) NOT NULL PRIMARY KEY,
+                                        user_id BIGINT NOT NULL,
+                                        expires_at TIMESTAMP NULL,
+                                        status INT NOT NULL,
+                                        CONSTRAINT fk_access_tokens_users FOREIGN KEY (user_id) REFERENCES users (id)
+);
+
+
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+                                             id VARCHAR(255) NOT NULL PRIMARY KEY,
+                                             access_token_id VARCHAR (255) NOT NULL,
+                                             user_id BIGINT NOT NULL,
+                                             expires_at TIMESTAMP NULL,
+                                             status INT NOT NULL,
+                                             CONSTRAINT fk_refresh_tokens__access_tokens FOREIGN KEY (access_token_id) REFERENCES access_tokens (id)
+);
+
+CREATE TABLE IF NOT EXISTS user_profile(
+                                           user_id BIGINT NOT NULL,
+                                           profile_id BIGINT NOT NULL,
+                                           PRIMARY KEY (user_id, profile_id),
+                                           CONSTRAINT fk_user_profile__profiles FOREIGN KEY (profile_id) REFERENCES profiles (id),
+                                           CONSTRAINT fk_user_profile__users FOREIGN KEY (user_id) REFERENCES users (id)
+
+
+);
+
 --
 --
 -- CREATE TABLE IF NOT EXISTS addresses (

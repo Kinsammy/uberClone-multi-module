@@ -19,6 +19,6 @@ public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Str
     }
 
     @Modifying
-    @Query("update refresh_tokens rt set rt.status = 0 where rt.id = :id")
+    @Query("update refresh_tokens rt set status = 0 where rt.id = :id")
     void deactivateRefreshTokenById(@Param("id") String id);
 }

@@ -15,6 +15,6 @@ public interface AccessTokenRepository extends CrudRepository<AccessToken, Strin
     }
 
     @Modifying
-    @Query("update access_tokens ac set ac.status = 0 where ac.id = :id")
+    @Query("update access_tokens ac set status = 0 where ac.id = :id")
     void deactivateAccessTokenById(@Param("id") String id);
 }
