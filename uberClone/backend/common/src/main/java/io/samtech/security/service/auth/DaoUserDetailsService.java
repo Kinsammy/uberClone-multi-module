@@ -1,4 +1,4 @@
-package io.samtech.security.auth;
+package io.samtech.security.service.auth;
 
 import io.samtech.configuration.annotation.validator.PhoneNumberValidator;
 import io.samtech.entity.rdb.User;

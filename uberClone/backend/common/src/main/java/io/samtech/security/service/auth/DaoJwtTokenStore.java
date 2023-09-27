@@ -1,4 +1,4 @@
-package io.samtech.security.auth;
+package io.samtech.security.service.auth;
 
 import io.samtech.constants.CommonConstants;
 import io.samtech.entity.rdb.AccessToken;

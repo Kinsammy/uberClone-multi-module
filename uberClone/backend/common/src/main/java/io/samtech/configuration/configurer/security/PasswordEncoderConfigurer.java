@@ -1,4 +1,4 @@
-package io.samtech.configuration.configurer;
+package io.samtech.configuration.configurer.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
