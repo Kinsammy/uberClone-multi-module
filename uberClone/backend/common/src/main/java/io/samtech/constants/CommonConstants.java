@@ -19,7 +19,7 @@ public abstract class CommonConstants {
 
     }
 
-    public static abstract class ProfileType{
+    public static abstract class ProfileType {
         public static final String BASIC = "basic";
     }
 
@@ -60,7 +60,7 @@ public abstract class CommonConstants {
     }
 
     public static abstract class TokenAudience {
-        public static final String ACCESS_TOKEN ="ACC";
+        public static final String ACCESS_TOKEN = "ACC";
         public static final String REFRESH_TOKEN = "REF";
     }
 
@@ -89,9 +89,9 @@ public abstract class CommonConstants {
 
         public static final List<String> basisPrivileges = List.of(READ_BASIC, WRITE_BASIC, UPDATE_BASIC, DELETE_BASIC);
 
-        public static final List<String> adminPrivileges = List.of(READ_PRIVILEGE, WRITE_PRIVILEGE, UPDATE_PRIVILEGE,DELETE_PRIVILEGE);
-
-
+        public static final List<String> adminPrivileges = List.of(READ_PRIVILEGE, WRITE_PRIVILEGE, UPDATE_PRIVILEGE, DELETE_PRIVILEGE);
 
 
     }
+
+}
