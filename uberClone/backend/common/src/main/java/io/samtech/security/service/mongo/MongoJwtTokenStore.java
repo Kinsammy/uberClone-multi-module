@@ -3,6 +3,7 @@ package io.samtech.security.service.mongo;
 import io.samtech.constants.CommonConstants;
 import io.samtech.entity.mongodb.MongoAccessToken;
 import io.samtech.entity.mongodb.MongoRefreshToken;
+import io.samtech.exception.RevokedJwtTokenException;
 import io.samtech.repository.mongodb.MongoAccessTokenRepository;
 import io.samtech.repository.mongodb.MongoRefreshTokenRepository;
 import io.samtech.security.jwt.JwtTokenStore;
@@ -45,25 +46,28 @@ public class MongoJwtTokenStore implements JwtTokenStore {
     @Override
     public Long getUserIdByRefreshTokenId(String refreshTokenId) {
         return refreshTokenRepo.findActiveMongoRefreshTokenId(refreshTokenId)
+                .map(MongoRefreshToken::getUserId)
+                .orElseThrow(RevokedJwtTokenException::new);
     }
 
     @Override
     public void inactiveAccessTokenById(String id) {
+        accessTokenRepo.deactivateAccessTokenById(id);
 
     }
 
     @Override
     public void inactiveRefreshTokenById(String id) {
-
-    }
-
-    @Override
-    public boolean isAccessTokenExisted(String accessTokenId) {
-        return false;
+        refreshTokenRepo.deactivateRefreshTokenById(id);
     }
 
     @Override
     public void removeTokensByAccessTokenId(String accessTokenId) {
-
+        refreshTokenRepo.deleteMongoRefreshTokenByAccessTokenId(accessTokenId);
+        accessTokenRepo.deleteById(accessTokenId);
+    }
+    @Override
+    public boolean isAccessTokenExisted(String accessTokenId) {
+        return accessTokenRepo.existsActiveMongoAccessTokenById(accessTokenId);
     }
 }

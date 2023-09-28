@@ -1,5 +1,7 @@
 package io.samtech.constants;
 
+import java.util.List;
+
 public abstract class CommonConstants {
 
     public static abstract class EntityName {
@@ -66,4 +68,30 @@ public abstract class CommonConstants {
         public static final String PHONE_NUMBER_PATTERN = "0[789][01][0-9]{8}";
     }
 
-}
+    public static abstract class Privilege {
+        public static final String READ_BASIC = "READ_BASIC";
+
+        public static final String WRITE_BASIC = "WRITE_BASIC";
+
+        public static final String UPDATE_BASIC = "UPDATE_BASIC";
+
+        public static final String DELETE_BASIC = "DELETE_BASIC";
+
+
+        public static final String READ_PRIVILEGE = "READ_PRIVILEGE";
+
+        public static final String WRITE_PRIVILEGE = "WRITE_PRIVILEGE";
+
+
+        public static final String UPDATE_PRIVILEGE = "UPDATE_PRIVILEGE";
+
+        public static final String DELETE_PRIVILEGE = "DELETE_PRIVILEGE";
+
+        public static final List<String> basisPrivileges = List.of(READ_BASIC, WRITE_BASIC, UPDATE_BASIC, DELETE_BASIC);
+
+        public static final List<String> adminPrivileges = List.of(READ_PRIVILEGE, WRITE_PRIVILEGE, UPDATE_PRIVILEGE,DELETE_PRIVILEGE);
+
+
+
+
+    }
