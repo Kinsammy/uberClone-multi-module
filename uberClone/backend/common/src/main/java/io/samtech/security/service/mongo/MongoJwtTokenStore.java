@@ -45,7 +45,7 @@ public class MongoJwtTokenStore implements JwtTokenStore {
 
     @Override
     public Long getUserIdByRefreshTokenId(String refreshTokenId) {
-        return refreshTokenRepo.findActiveMongoRefreshTokenId(refreshTokenId)
+        return refreshTokenRepo.findActiveMongoRefreshTokenById(refreshTokenId)
                 .map(MongoRefreshToken::getUserId)
                 .orElseThrow(RevokedJwtTokenException::new);
     }

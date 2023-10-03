@@ -7,12 +7,14 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface MongoRefreshTokenRepository extends CrudRepository<MongoRefreshToken, String> {
-    void deleteMongoRefreshTokenByAccessTokenId(final String accessTokenId);
-    default Optional<MongoRefreshToken> findActiveMongoRefreshTokenId(String id){
-        return findActiveMongoRefreshTokenIdAfterAndStatus(id, CommonConstants.EntityStatus.ACTIVE);
-    }
 
-    Optional<MongoRefreshToken> findActiveMongoRefreshTokenIdAfterAndStatus(String id, Integer status);
+    void deleteMongoRefreshTokenByAccessTokenId(final String accessTokenId);
+
+    Optional<MongoRefreshToken> findMongoRefreshTokenByIdAfterAndStatus(String id, Integer status);
+
+    default Optional<MongoRefreshToken> findActiveMongoRefreshTokenById(String id) {
+        return findMongoRefreshTokenByIdAfterAndStatus(id, CommonConstants.EntityStatus.ACTIVE);
+    }
 
     default void deactivateRefreshTokenById(String id) {
         this.findById(id).ifPresent(mongoRefreshToken -> {
