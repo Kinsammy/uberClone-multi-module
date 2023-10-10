@@ -84,11 +84,14 @@ CREATE TABLE IF NOT EXISTS users (
                                      preferred_username VARCHAR(255) NOT NULL,
                                      unsigned_name VARCHAR(255) NULL,
                                      username VARCHAR(255) NOT NULL,
+--                                      token_id BIGINT NULL,
 
                                      CONSTRAINT uk_users_username UNIQUE (username),
                                      CONSTRAINT uk_users_email UNIQUE (email),
                                      CONSTRAINT uk_users_phone_number UNIQUE (phone_number),
                                      CONSTRAINT users_preferred_username_uindex UNIQUE (preferred_username)
+--                                      CONSTRAINT fk_users_tokens FOREIGN KEY (token_id) REFERENCES tokens (id)
+
 );
 CREATE TABLE IF NOT EXISTS profiles (
                                         id BIGINT  PRIMARY KEY,
@@ -161,16 +164,21 @@ CREATE TABLE IF NOT EXISTS user_profile(
 
 );
 
-CREATE TABLE IF NOT EXISTS tokens(
-                                     id BIGINT  PRIMARY KEY,
-                                     created_by VARCHAR(255),
-                                     created_date TIMESTAMP NULL,
-                                     "last_modified_by" VARCHAR(255),
-                                     "last_modified_date" TIMESTAMP NULL,
-                                     user_id BIGINT NULL,
-                                     token_type VARCHAR(10),
+CREATE TABLE IF NOT EXISTS tokens (
+                                      id BIGINT PRIMARY KEY,
+                                      created_by VARCHAR(255),
+                                      created_date TIMESTAMP NULL,
+                                      last_modified_by VARCHAR(255),
+                                      last_modified_date TIMESTAMP NULL,
+                                      user_id BIGINT NULL,
+                                      token_type VARCHAR(10),
+                                      token VARCHAR(255), -- Define the appropriate size for your 'token' column
+                                      expired BOOLEAN,
+                                      revoked BOOLEAN,
+                                      expiry_time TIMESTAMP,
+                                      CONSTRAINT fk_tokens_users FOREIGN KEY (user_id) REFERENCES users (id)
+);
 
-)
 
 --
 --

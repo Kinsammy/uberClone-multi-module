@@ -1,6 +1,7 @@
 package io.samtech.configuration.configurer.security;
 
 import io.samtech.constants.CommonConstants;
+import io.samtech.security.currentSecurity.JwtAuthenticationFilter;
 import io.samtech.security.jwt.JwtSecurityAdapter;
 import io.samtech.security.jwt.JwtTokenProvider;
 import io.samtech.security.jwt.RestAuthenticationEntryPoint;
@@ -37,7 +38,7 @@ public class DefaultWebSecurityConfigurer {
     private final AuthenticationProvider authenticationProvider;
     private final Oauth2JwtAuthenticationConverter oauth2JwtAuthenticationConverter;
     private final HandlerExceptionResolver resolver;
-    private final SimpleJwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
     private static final String[] AUTHENTICATION_WHITELIST = {
             "/v2/api-docs",
@@ -71,7 +72,7 @@ public class DefaultWebSecurityConfigurer {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers -> {
                     headers
                             .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
