@@ -30,6 +30,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.util.List;
 
 @EnableWebSecurity
+@RequiredArgsConstructor
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class DefaultWebSecurityConfigurer {
     private final JwtTokenProvider jwtTokenProvider;
@@ -52,16 +53,16 @@ public class DefaultWebSecurityConfigurer {
     };
 
 
-    public DefaultWebSecurityConfigurer(JwtTokenProvider jwtTokenProvider,
-                                        Oauth2JwtAuthenticationConverter oauth2JwtAuthenticationConverter,
-                                        @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver,
-                                        AuthenticationProvider authenticationProvider, SimpleJwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.oauth2JwtAuthenticationConverter = oauth2JwtAuthenticationConverter;
-        this.resolver = resolver;
-        this.authenticationProvider = authenticationProvider;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
+//    public DefaultWebSecurityConfigurer(JwtTokenProvider jwtTokenProvider,
+//                                        Oauth2JwtAuthenticationConverter oauth2JwtAuthenticationConverter,
+//                                        @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver,
+//                                        AuthenticationProvider authenticationProvider, SimpleJwtAuthenticationFilter jwtAuthenticationFilter) {
+//        this.jwtTokenProvider = jwtTokenProvider;
+//        this.oauth2JwtAuthenticationConverter = oauth2JwtAuthenticationConverter;
+//        this.resolver = resolver;
+//        this.authenticationProvider = authenticationProvider;
+//        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+//    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -71,9 +72,14 @@ public class DefaultWebSecurityConfigurer {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .headers(headers -> headers.referrerPolicy(referrer-> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)))
-                .headers(headers -> headers.permissionsPolicy(permissions-> permissions.policy("camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()")))
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .headers(headers -> {
+                    headers
+                            .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                            .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                            .permissionsPolicy(permissions -> permissions.policy("camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()"));
+                })
+
+
                 .authorizeHttpRequests(authorize ->
                         authorize.requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                                 .requestMatchers("/webjars/**", "/error/**").permitAll()
@@ -96,16 +102,16 @@ public class DefaultWebSecurityConfigurer {
 //                    }
 //                });
 
-//        http
-//                .oauth2ResourceServer(oauth2 ->
-//                {
-//                    oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(oauth2JwtAuthenticationConverter));
-//                    oauth2.authenticationEntryPoint(new RestAuthenticationEntryPoint(resolver));
-//                });
-//
-//        http.exceptionHandling(
-//                exceptionHandlingConfigurer -> exceptionHandlingConfigurer.authenticationEntryPoint(new RestAuthenticationEntryPoint(resolver))
-//        );
+        http
+                .oauth2ResourceServer(oauth2 ->
+                {
+                    oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(oauth2JwtAuthenticationConverter));
+                    oauth2.authenticationEntryPoint(new RestAuthenticationEntryPoint(resolver));
+                });
+
+        http.exceptionHandling(
+                exceptionHandlingConfigurer -> exceptionHandlingConfigurer.authenticationEntryPoint(new RestAuthenticationEntryPoint(resolver))
+        );
         return http.build();
 
 

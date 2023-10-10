@@ -17,6 +17,7 @@ public abstract class CommonConstants {
         public static final String ACCESS_TOKEN = "access_tokens";
         public static final String REFRESH_TOKEN = "refresh_tokens";
 
+        public static final String TOKEN = "token";
     }
 
     public static abstract class ProfileType {
@@ -94,4 +95,7 @@ public abstract class CommonConstants {
 
     }
 
+    public static abstract class TokenType {
+        public static final Integer BEARER = 1;
+    }
 }

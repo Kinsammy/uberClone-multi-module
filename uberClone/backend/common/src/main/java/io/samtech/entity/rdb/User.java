@@ -76,6 +76,9 @@ public class User extends AbstractJdbcEntity<Long> implements SecuredUser {
     @Transient
     private Set<String> authorities = new HashSet<>();
 
+    @MappedCollection(idColumn = "user_id")
+    private Set<Token> tokens;
+
     public User() {
     }
 
@@ -84,7 +87,7 @@ public class User extends AbstractJdbcEntity<Long> implements SecuredUser {
                 Integer emailVerified, String familyName, String middleName, String givenName,
                 String name, String unsigned_name, String phoneNumber, Integer phoneNumberVerified,
                 Integer gender, LocalDate birthdate, Integer enabled, Integer locked, Set<Role> roles,
-                Set<Group> groups, Set<UserRoleRef> roleRefs, Set<UserGroupRef> groupRefs, Set<String> authorities) {
+                Set<Group> groups, Set<UserRoleRef> roleRefs, Set<UserGroupRef> groupRefs, Set<String> authorities, Set<Token> tokens)  {
         this.id = id;
         this.username = username;
         this.preferredUsername = preferredUsername;
@@ -109,6 +112,7 @@ public class User extends AbstractJdbcEntity<Long> implements SecuredUser {
         this.roleRefs = Objects.requireNonNullElse(roleRefs, fromRoles(roles));
         this.groupRefs = Objects.requireNonNullElse(groupRefs, fromGroups(groups));
         this.authorities = Objects.requireNonNullElse(authorities, new HashSet<>());
+        this.tokens = Objects.requireNonNullElse(tokens, new HashSet<>());
     }
 
     private void setAuthorities(Set<String> authorities) {

@@ -161,6 +161,17 @@ CREATE TABLE IF NOT EXISTS user_profile(
 
 );
 
+CREATE TABLE IF NOT EXISTS tokens(
+                                     id BIGINT  PRIMARY KEY,
+                                     created_by VARCHAR(255),
+                                     created_date TIMESTAMP NULL,
+                                     "last_modified_by" VARCHAR(255),
+                                     "last_modified_date" TIMESTAMP NULL,
+                                     user_id BIGINT NULL,
+                                     token_type VARCHAR(10),
+
+)
+
 --
 --
 -- CREATE TABLE IF NOT EXISTS addresses (

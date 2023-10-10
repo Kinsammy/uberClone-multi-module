@@ -2,6 +2,9 @@ package io.samtech.configuration.configurer;
 
 import com.naharoo.commons.mapstruct.MappingFacade;
 import io.samtech.repository.rdb.UserRepository;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -10,11 +13,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+
+import java.io.IOException;
 
 @Configuration
 @RequiredArgsConstructor
@@ -58,5 +65,16 @@ public class AppConfig {
     @Bean
     public ModelMapper modelMapper(){
         return new ModelMapper();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint(){
+        return new AuthenticationEntryPoint() {
+            @Override
+            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Unauthorized. Please login to access this resource.");
+            }
+        };
     }
 }

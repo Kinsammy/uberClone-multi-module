@@ -7,10 +7,12 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -19,6 +21,7 @@ import java.util.Enumeration;
 import java.util.Objects;
 
 @Slf4j
+@Component
 public class SimpleJwtAuthenticationFilter extends GenericFilterBean {
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
