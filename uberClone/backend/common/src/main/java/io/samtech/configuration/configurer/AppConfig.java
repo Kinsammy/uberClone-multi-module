@@ -31,15 +31,7 @@ public class AppConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-//        Long process
-//        return new UserDetailsService() {
-//            @Override
-//            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//                return null;
-//            }
-//        }
-//        Short process is using lambda
-        return username -> (UserDetails) userRepository.findUserByEmail(username)
+        return username -> (UserDetails) userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     }
@@ -67,14 +59,14 @@ public class AppConfig {
         return new ModelMapper();
     }
 
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint(){
-        return new AuthenticationEntryPoint() {
-            @Override
-            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Unauthorized. Please login to access this resource.");
-            }
-        };
-    }
+//    @Bean
+//    public AuthenticationEntryPoint authenticationEntryPoint(){
+//        return new AuthenticationEntryPoint() {
+//            @Override
+//            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//                response.getWriter().write("Unauthorized. Please login to access this resource.");
+//            }
+//        };
+//    }
 }
