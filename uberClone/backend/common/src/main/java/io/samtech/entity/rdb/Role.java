@@ -16,7 +16,6 @@ import static io.samtech.constants.CommonConstants.EntityName.ROLE;
 @Getter
 @Setter
 @Builder
-
 @Table(value = ROLE)
 public class Role extends AbstractJdbcEntity<Long> {
     protected Long id;

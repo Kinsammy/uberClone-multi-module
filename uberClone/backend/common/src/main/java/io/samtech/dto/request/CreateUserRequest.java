@@ -1,11 +1,15 @@
 package io.samtech.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateUserRequest {
     private String email;
 
@@ -20,17 +24,8 @@ public class CreateUserRequest {
     private String givenName;
     private String phoneNumber;
 
-    @NotNull
+//    @NotNull
     private List<Long> roleIds;
 
-    public CreateUserRequest(String email, Integer gender, int emailVerified, String familyName, String middleName, String givenName, String phoneNumber, List<Long> roleIds) {
-        this.email = email;
-        this.gender = gender;
-        this.emailVerified = emailVerified;
-        this.familyName = familyName;
-        this.middleName = middleName;
-        this.givenName = givenName;
-        this.phoneNumber = phoneNumber;
-        this.roleIds = roleIds;
-    }
+
 }

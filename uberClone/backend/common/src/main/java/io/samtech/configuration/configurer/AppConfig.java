@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
@@ -59,14 +60,19 @@ public class AppConfig {
         return new ModelMapper();
     }
 
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint(){
+        return new AuthenticationEntryPoint() {
+            @Override
+            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Unauthorized. Please login to access this resource.");
+            }
+        };
+    }
+
 //    @Bean
-//    public AuthenticationEntryPoint authenticationEntryPoint(){
-//        return new AuthenticationEntryPoint() {
-//            @Override
-//            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//                response.getWriter().write("Unauthorized. Please login to access this resource.");
-//            }
-//        };
+//    public HandlerExceptionResolver handlerExceptionResolver(){
+//        return new HandlerExceptionResolver();
 //    }
 }

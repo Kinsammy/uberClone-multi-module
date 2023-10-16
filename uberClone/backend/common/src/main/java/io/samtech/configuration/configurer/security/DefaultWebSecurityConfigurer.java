@@ -1,13 +1,7 @@
 package io.samtech.configuration.configurer.security;
 
-import io.samtech.constants.CommonConstants;
 import io.samtech.security.currentSecurity.JwtAuthenticationFilter;
-//import io.samtech.security.jwt.JwtSecurityAdapter;
-import io.samtech.security.jwt.JwtTokenProvider;
-//import io.samtech.security.jwt.RestAuthenticationEntryPoint;
-//import io.samtech.security.jwt.SimpleJwtAuthenticationFilter;
-import io.samtech.security.oauth2.Oauth2JwtAuthenticationConverter;
-import lombok.AllArgsConstructor;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -39,13 +33,8 @@ import static org.springframework.http.HttpMethod.DELETE;
 //@RequiredArgsConstructor
 //@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 //public class DefaultWebSecurityConfigurer {
-////    private final JwtTokenProvider jwtTokenProvider;
-//    private final AuthenticationProvider authenticationProvider;
-////    private final Oauth2JwtAuthenticationConverter oauth2JwtAuthenticationConverter;
-////    private final HandlerExceptionResolver resolver;
-//    private final JwtAuthenticationFilter jwtAuthFilter;
-//
 //    private static final String[] AUTHENTICATION_WHITELIST = {
+//            "/api/v1/auth/**",
 //            "/v2/api-docs",
 //            "/v3/api-docs",
 //            "/v3/api-docs/**",
@@ -57,6 +46,13 @@ import static org.springframework.http.HttpMethod.DELETE;
 //            "webjars/**",
 //            "/swagger-ui.html"
 //    };
+//    private final JwtTokenProvider jwtTokenProvider;
+//    private final AuthenticationProvider authenticationProvider;
+//    private final Oauth2JwtAuthenticationConverter oauth2JwtAuthenticationConverter;
+//    private final HandlerExceptionResolver resolver;
+//    private final SimpleJwtAuthenticationFilter jwtAuthFilter;
+//
+//
 //
 //
 ////    public DefaultWebSecurityConfigurer(JwtTokenProvider jwtTokenProvider,
@@ -71,48 +67,50 @@ import static org.springframework.http.HttpMethod.DELETE;
 ////    }
 //
 //    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 //        http
 //                .csrf(AbstractHttpConfigurer::disable)
 //                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-//                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .sessionManagement(sessionManagement ->
+//                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .authenticationProvider(authenticationProvider)
 //                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-//                .headers(headers -> {
-//                    headers
-//                            .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
-//                            .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
-//                            .permissionsPolicy(permissions -> permissions.policy("camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()"));
-//                })
+////                .addFilterAt(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+////                .headers(headers -> {
+////                    headers
+////                            .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+////                            .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+////                            .permissionsPolicy(permissions -> permissions.policy("camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()"));
+////                })
 //
 //
 //                .authorizeHttpRequests(authorize ->
 //                        authorize.requestMatchers(AUTHENTICATION_WHITELIST).permitAll()
-//                                .requestMatchers("/auth/token", "/auth/renew-token", "/auth/forgot-password", "/auth/forgot-password-complete","/auth/otp/verify","/driver/**","/admin/**").permitAll()
+////                                .requestMatchers("/auth/token", "/auth/renew-token", "/auth/forgot-password", "/auth/forgot-password-complete","/auth/otp/verify","/driver/**","/admin/**").permitAll()
 ////                                .requestMatchers("/actuator/**").hasAuthority(CommonConstants.Privilege.READ_PRIVILEGE)
 //                                .anyRequest()
 //                                .authenticated());
 //
-////        http
-////                .formLogin(form -> {
-////                    try {
-////                        form.disable().logout(AbstractHttpConfigurer::disable)
-////                                .apply(securityConfigurerAdapter());
-////                    } catch (Exception e) {
-////                        throw new RuntimeException(e);
-////                    }
-////                });
+//        http
+//                .formLogin(form -> {
+//                    try {
+//                        form.disable().logout(AbstractHttpConfigurer::disable)
+//                                .apply(securityConfigurerAdapter());
+//                    } catch (Exception e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                });
 //
-////        http
-////                .oauth2ResourceServer(oauth2 ->
-////                {
-////                    oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(oauth2JwtAuthenticationConverter));
-////                    oauth2.authenticationEntryPoint(new RestAuthenticationEntryPoint(resolver));
-////                });
-////
-////        http.exceptionHandling(
-////                exceptionHandlingConfigurer -> exceptionHandlingConfigurer.authenticationEntryPoint(new RestAuthenticationEntryPoint(resolver))
-////        );
+//        http
+//                .oauth2ResourceServer(oauth2 ->
+//                {
+//                    oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(oauth2JwtAuthenticationConverter));
+//                    oauth2.authenticationEntryPoint(new RestAuthenticationEntryPoint(resolver));
+//                });
+//
+//        http.exceptionHandling(
+//                exceptionHandlingConfigurer -> exceptionHandlingConfigurer.authenticationEntryPoint(new RestAuthenticationEntryPoint(resolver))
+//        );
 //        return http.build();
 //
 //
@@ -122,9 +120,9 @@ import static org.springframework.http.HttpMethod.DELETE;
 //
 //    }
 //
-////    private JwtSecurityAdapter securityConfigurerAdapter() {
-////        return new JwtSecurityAdapter(jwtTokenProvider, new RestAuthenticationEntryPoint(resolver));
-////    }
+//    private JwtSecurityAdapter securityConfigurerAdapter() {
+//        return new JwtSecurityAdapter(jwtTokenProvider, new RestAuthenticationEntryPoint(resolver));
+//    }
 //
 //    private CorsConfigurationSource corsConfigurationSource() {
 //        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -137,7 +135,7 @@ import static org.springframework.http.HttpMethod.DELETE;
 //    }
 //}
 //
-//
+
 
 
 
@@ -148,7 +146,8 @@ import static org.springframework.http.HttpMethod.DELETE;
 public class DefaultWebSecurityConfigurer {
 
     private static final String[] AUTHENTICATION_WHITELIST = {
-            "/api/v1/auth/**",
+
+            "/user/**",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -174,6 +173,12 @@ public class DefaultWebSecurityConfigurer {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 //                .addFilterAt(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> {
+                    headers
+                            .referrerPolicy(referrer -> referrer.policy(ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+                            .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                            .permissionsPolicy(permissions -> permissions.policy("camera=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), sync-xhr=()"));
+                })
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTHENTICATION_WHITELIST)
                         .permitAll()

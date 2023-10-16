@@ -69,7 +69,7 @@ public class UserCreationListener implements ApplicationListener<UserCreationEve
                 .subject("Account Creation Email Verification")
                 .templateName("AccountRegistrationEmailToken.ftlh")
                 .templateParams(map)
-                .templateId(3L)
+                .templateId(1L)
                 .bodyText("Registration Confirmation token is "+ confirmationUrl)
                 .build();
 
