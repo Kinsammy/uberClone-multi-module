@@ -14,16 +14,16 @@ import static io.samtech.entity.models.Permission.*;
 
 @RequiredArgsConstructor
 public enum Role {
-    LIBRARY_USER(
+    PASSENGER(
             Set.of(
-                    LIBRARY_USER_REGISTER,
-                    LIBRARY_USER_VERIFY,
-                    LIBRARY_USER_LOGIN,
-                    LIBRARY_USER_RESET_PASSWORD,
-                    LIBRARY_USER_RESET_PASSWORD_MAIL,
-                    LIBRARY_USER_REFRESH_TOKEN,
-                    LIBRARY_USER_VIEW_ALL_BOOKS,
-                    LIBRARY_USER_VIEW_A_BOOK
+                    PASSENGER_REGISTER,
+                    PASSENGER_VERIFY,
+                    PASSENGER_LOGIN,
+                    PASSENGER_RESET_PASSWORD,
+                    PASSENGER_RESET_PASSWORD_MAIL,
+                    PASSENGER_REFRESH_TOKEN,
+                    PASSENGER_VIEW_ALL_BOOKS,
+                    PASSENGER_VIEW_A_BOOK
 
             )
     ),
@@ -33,27 +33,34 @@ public enum Role {
                     ADMIN_CREATE,
                     ADMIN_UPDATE,
                     ADMIN_DELETE,
-                    LIBRARIAN_READ,
-                    LIBRARIAN_CREATE,
-                    LIBRARIAN_UPDATE,
-                    LIBRARIAN_DELETE,
-                    LIBRARY_USER_REGISTER,
-                    LIBRARY_USER_VERIFY,
-                    LIBRARY_USER_LOGIN,
-                    LIBRARY_USER_RESET_PASSWORD,
-                    LIBRARY_USER_RESET_PASSWORD_MAIL,
-                    LIBRARY_USER_REFRESH_TOKEN,
-                    LIBRARY_USER_VIEW_ALL_BOOKS,
-                    LIBRARY_USER_VIEW_A_BOOK
+                    DRIVER_REGISTER,
+                    DRIVER_VERIFY,
+                    DRIVER_LOGIN,
+                    DRIVER_RESET_PASSWORD,
+                    DRIVER_RESET_PASSWORD_MAIL,
+                    DRIVER_REFRESH_TOKEN,
+                    DRIVER_VIEW_ALL_BOOKS,
+                    DRIVER_VIEW_A_BOOK,
+                    PASSENGER_REGISTER,
+                    PASSENGER_VERIFY,
+                    PASSENGER_LOGIN,
+                    PASSENGER_RESET_PASSWORD,
+                    PASSENGER_RESET_PASSWORD_MAIL,
+                    PASSENGER_REFRESH_TOKEN,
+                    PASSENGER_VIEW_ALL_BOOKS,
+                    PASSENGER_VIEW_A_BOOK
             )
     ),
-    LIBRARIAN(
+    DRIVER(
             Set.of(
-                    LIBRARIAN_READ,
-                    LIBRARIAN_CREATE,
-                    LIBRARIAN_UPDATE,
-                    LIBRARIAN_DELETE,
-                    LIBRARY_USER_LOGIN
+                    DRIVER_REGISTER,
+                    DRIVER_VERIFY,
+                    DRIVER_LOGIN,
+                    DRIVER_RESET_PASSWORD,
+                    DRIVER_RESET_PASSWORD_MAIL,
+                    DRIVER_REFRESH_TOKEN,
+                    DRIVER_VIEW_ALL_BOOKS,
+                    DRIVER_VIEW_A_BOOK
             )
     )
     ;

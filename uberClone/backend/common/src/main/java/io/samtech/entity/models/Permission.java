@@ -5,22 +5,26 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum Permission {
-    LIBRARY_USER_REGISTER("library_user:register"),
-    LIBRARY_USER_VERIFY("library_user:verify"),
-    LIBRARY_USER_LOGIN("library_user:login"),
-    LIBRARY_USER_RESET_PASSWORD_MAIL("library_user:reset_password_mail"),
-    LIBRARY_USER_RESET_PASSWORD("library_user:reset_password"),
-    LIBRARY_USER_REFRESH_TOKEN("library_user:refresh_token"),
-    LIBRARY_USER_VIEW_ALL_BOOKS("library_user:view_all_books"),
-    LIBRARY_USER_VIEW_A_BOOK("library_user:view_a_book"),
+    PASSENGER_REGISTER("passenger:register"),
+    PASSENGER_VERIFY("passenger:verify"),
+    PASSENGER_LOGIN("passenger:login"),
+    PASSENGER_RESET_PASSWORD_MAIL("passenger:reset_password_mail"),
+    PASSENGER_RESET_PASSWORD("passenger:reset_password"),
+    PASSENGER_REFRESH_TOKEN("passenger:refresh_token"),
+    PASSENGER_VIEW_ALL_BOOKS("passenger:view_all_books"),
+    PASSENGER_VIEW_A_BOOK("passenger:view_a_book"),
     ADMIN_READ("admin:read"),
     ADMIN_CREATE("admin:create"),
     ADMIN_UPDATE("admin:update"),
     ADMIN_DELETE("admin:delete"),
-    LIBRARIAN_READ("librarian:read"),
-    LIBRARIAN_CREATE("librarian:create"),
-    LIBRARIAN_UPDATE("librarian:update"),
-    LIBRARIAN_DELETE("librarian:delete")
+    DRIVER_REGISTER("driver:register"),
+    DRIVER_VERIFY("driver:verify"),
+    DRIVER_LOGIN("driver:login"),
+    DRIVER_RESET_PASSWORD_MAIL("driver:reset_password_mail"),
+    DRIVER_RESET_PASSWORD("driver:reset_password"),
+    DRIVER_REFRESH_TOKEN("driver:refresh_token"),
+    DRIVER_VIEW_ALL_BOOKS("driver:view_all_books"),
+    DRIVER_VIEW_A_BOOK("driver:view_a_book"),
     ;
 
     @Getter
