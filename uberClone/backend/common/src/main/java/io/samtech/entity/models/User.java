@@ -2,6 +2,7 @@ package io.samtech.entity.models;
 
 import io.samtech.entity.models.Role;
 import io.samtech.entity.rdb.AbstractJdbcEntity;
+import io.samtech.entity.rdb.Profile;
 import io.samtech.entity.rdb.Token;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static io.samtech.constants.CommonConstants.EntityName.USER;
 
@@ -65,6 +67,8 @@ public class User implements UserDetails {
     private Role role;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Token> tokens;
+    @OneToMany
+    private Set<Profile> profile;
 
 
     @Override

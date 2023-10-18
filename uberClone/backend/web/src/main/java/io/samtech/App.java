@@ -11,10 +11,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
-@EnableJdbcRepositories
+//@EnableJdbcRepositories
 @EnableJpaRepositories
 @SpringBootApplication(scanBasePackages = {"io.samtech.**"})
 @EntityScan(basePackages = {"io.samtech.**"})
+
 @EnableMongoRepositories(basePackages = {"io.samtech.**"})
 @EnableAsync
 public class App extends AsyncConfigurerSupport {

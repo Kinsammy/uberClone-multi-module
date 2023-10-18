@@ -14,6 +14,11 @@ import static io.samtech.entity.models.Permission.*;
 
 @RequiredArgsConstructor
 public enum Role {
+
+    BASIC(Set.of(
+            BASIC_READ
+    )),
+
     PASSENGER(
             Set.of(
                     PASSENGER_REGISTER,
@@ -51,6 +56,8 @@ public enum Role {
                     PASSENGER_VIEW_A_BOOK
             )
     ),
+
+
     DRIVER(
             Set.of(
                     DRIVER_REGISTER,

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum Permission {
+    BASIC_READ("basic:read"),
     PASSENGER_REGISTER("passenger:register"),
     PASSENGER_VERIFY("passenger:verify"),
     PASSENGER_LOGIN("passenger:login"),

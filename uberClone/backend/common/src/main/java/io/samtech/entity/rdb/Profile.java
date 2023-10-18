@@ -1,7 +1,12 @@
 package io.samtech.entity.rdb;
 
 import io.samtech.constants.CommonConstants;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Table;
@@ -13,8 +18,13 @@ import static io.samtech.constants.CommonConstants.EntityName.PROFILE;
 @Getter
 @Setter
 @ToString
-@Table(value = PROFILE)
-public class Profile extends AbstractJdbcEntity<Long>{
+@NoArgsConstructor
+//@Table(value = PROFILE)
+@Entity
+public class Profile{
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String type;
     private int isActivated;
     private int status;
@@ -23,4 +33,6 @@ public class Profile extends AbstractJdbcEntity<Long>{
     public Profile(String type){
         this.type = Objects.requireNonNullElse(type, CommonConstants.ProfileType.BASIC);
     }
+
+
 }

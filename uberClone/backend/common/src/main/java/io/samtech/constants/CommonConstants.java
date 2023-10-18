@@ -22,6 +22,7 @@ public abstract class CommonConstants {
 
     public static abstract class ProfileType {
         public static final String BASIC = "basic";
+        public static final String PASSENGER = "passenger";
     }
 
     public static abstract class EntityStatus {
