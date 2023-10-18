@@ -1,6 +1,6 @@
 package io.samtech.application.event.event;
 
-import io.samtech.entity.rdb.User;
+import io.samtech.entity.models.User;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.context.ApplicationEvent;

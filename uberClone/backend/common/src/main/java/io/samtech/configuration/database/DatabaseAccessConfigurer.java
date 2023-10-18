@@ -1,70 +1,70 @@
-package io.samtech.configuration.database;
-
-import io.samtech.constants.CommonConstants;
-import io.samtech.entity.ManualPersistable;
-import io.samtech.utils.AppContextUtils;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
-import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
-import org.springframework.data.mongodb.config.EnableMongoAuditing;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.data.relational.core.mapping.event.AfterConvertEvent;
-import org.springframework.data.relational.core.mapping.event.AfterSaveEvent;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Objects;
-import java.util.Optional;
-
-@Configuration
-@EntityScan(value = {"io.samtech.**"})
-@EnableJdbcRepositories(value = {"io.samtech.**"})
-@EnableJdbcAuditing(auditorAwareRef = "auditorProvider")
-@EnableMongoRepositories({"io.samtech.**"})
-@EnableMongoAuditing(auditorAwareRef = "auditorProvider")
-class DatabaseAccessConfigurer {
-    @Bean
-    public AuditorAware<Long> auditorProvider() {
-        return new DomainAuditorAware();
-    }
-
-    @Bean
-    ApplicationListener<AfterSaveEvent<Object>> beforeSaveManualPersistable() {
-        return event -> {
-            Object e = event.getEntity();
-            if (e instanceof ManualPersistable) {
-                ((ManualPersistable<?>) e).setNewEntity(Boolean.FALSE);
-            }
-        };
-    }
-
-    @Bean
-    ApplicationListener<AfterConvertEvent<Object>> afterLoadManualPersistable() {
-        return event -> {
-            Object e = event.getEntity();
-            if (e instanceof ManualPersistable) {
-                ((ManualPersistable<?>) e).setNewEntity(Boolean.FALSE);
-            }
-        };
-    }
-
-
-    static class DomainAuditorAware implements AuditorAware<Long> {
-        @Override
-        public Optional<Long> getCurrentAuditor() {
-            Optional<Authentication> authentication = Optional.ofNullable(SecurityContextHolder.getContext())
-                    .map(SecurityContext::getAuthentication);
-            if (authentication.isPresent() && Objects.equals("anonymousUser", authentication.get().getPrincipal())) {
-                return Optional.of(CommonConstants.User.ANONYMOUS_ID);
-            }
-            return Optional.of(AppContextUtils.getCurrentLoginUserId());
-        }
-    }
-
-}
-
+//package io.samtech.configuration.database;
+//
+//import io.samtech.constants.CommonConstants;
+//import io.samtech.entity.ManualPersistable;
+//import io.samtech.utils.AppContextUtils;
+//import org.springframework.boot.autoconfigure.domain.EntityScan;
+//import org.springframework.context.ApplicationListener;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.data.domain.AuditorAware;
+//import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
+//import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+//import org.springframework.data.mongodb.config.EnableMongoAuditing;
+//import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+//import org.springframework.data.relational.core.mapping.event.AfterConvertEvent;
+//import org.springframework.data.relational.core.mapping.event.AfterSaveEvent;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContext;
+//import org.springframework.security.core.context.SecurityContextHolder;
+//
+//import java.util.Objects;
+//import java.util.Optional;
+//
+//@Configuration
+//@EntityScan(value = {"io.samtech.**"})
+//@EnableJdbcRepositories(value = {"io.samtech.**"})
+//@EnableJdbcAuditing(auditorAwareRef = "auditorProvider")
+//@EnableMongoRepositories({"io.samtech.**"})
+//@EnableMongoAuditing(auditorAwareRef = "auditorProvider")
+//class DatabaseAccessConfigurer {
+//    @Bean
+//    public AuditorAware<Long> auditorProvider() {
+//        return new DomainAuditorAware();
+//    }
+//
+//    @Bean
+//    ApplicationListener<AfterSaveEvent<Object>> beforeSaveManualPersistable() {
+//        return event -> {
+//            Object e = event.getEntity();
+//            if (e instanceof ManualPersistable) {
+//                ((ManualPersistable<?>) e).setNewEntity(Boolean.FALSE);
+//            }
+//        };
+//    }
+//
+//    @Bean
+//    ApplicationListener<AfterConvertEvent<Object>> afterLoadManualPersistable() {
+//        return event -> {
+//            Object e = event.getEntity();
+//            if (e instanceof ManualPersistable) {
+//                ((ManualPersistable<?>) e).setNewEntity(Boolean.FALSE);
+//            }
+//        };
+//    }
+//
+//
+//    static class DomainAuditorAware implements AuditorAware<Long> {
+//        @Override
+//        public Optional<Long> getCurrentAuditor() {
+//            Optional<Authentication> authentication = Optional.ofNullable(SecurityContextHolder.getContext())
+//                    .map(SecurityContext::getAuthentication);
+//            if (authentication.isPresent() && Objects.equals("anonymousUser", authentication.get().getPrincipal())) {
+//                return Optional.of(CommonConstants.User.ANONYMOUS_ID);
+//            }
+//            return Optional.of(AppContextUtils.getCurrentLoginUserId());
+//        }
+//    }
+//
+//}
+//

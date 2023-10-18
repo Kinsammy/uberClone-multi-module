@@ -1,7 +1,7 @@
 package io.samtech.configuration.configurer;
 
 import com.naharoo.commons.mapstruct.MappingFacade;
-import io.samtech.repository.rdb.UserRepository;
+import io.samtech.repository.model.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -210,6 +210,25 @@
 		</dependency>
 
 
+		<dependency>
+			<groupId>io.zipkin.brave</groupId>
+			<artifactId>brave</artifactId>
+			<version>5.16.0</version> <!-- Use the latest version available -->
+		</dependency>
+		<dependency>
+			<groupId>io.zipkin.brave</groupId>
+			<artifactId>brave-context-slf4j</artifactId>
+			<version>5.13.9</version> <!-- Use the latest version available -->
+		</dependency>
+
+		<!-- Brave instrumentation for various components (e.g., Spring) -->
+		<dependency>
+			<groupId>io.zipkin.brave</groupId>
+			<artifactId>brave-instrumentation-spring-web</artifactId>
+			<version>5.15.1</version> <!-- Use the latest version available -->
+		</dependency>
+
+
 	</dependencies>
 
     <repositories>

@@ -6,7 +6,7 @@ import brave.propagation.TraceContext;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.samtech.utils.AppContextUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.util.Base64Utils;
+
 
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
@@ -70,16 +70,16 @@ public class Metadata {
         Metadata metadata = Metadata.builder()
                 .timestamp(now())
                 .traceId(getTracerId())
-                .reportId(generateReportId())
+//                .reportId(generateReportId())
                 .stackTrace(ExceptionUtils.getStackTrace(e))
                 .build();
         log.error("Got an exception, details:", e);
         return metadata;
     }
 
-    private static String generateReportId() {
-        return Base64Utils.encodeToString(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
-    }
+//    private static String generateReportId() {
+//        return Base64Utils.encodeToString(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
+//    }
 
     @Override
     public String toString() {
@@ -90,7 +90,7 @@ public class Metadata {
         return "\n" + reportId + " - " + stackTrace;
     }
 
-    static {
-        tracer = AppContextUtils.getBean(Tracer.class);
-    }
+//    static {
+//        tracer = AppContextUtils.getBean(Tracer.class);
+//    }
 }

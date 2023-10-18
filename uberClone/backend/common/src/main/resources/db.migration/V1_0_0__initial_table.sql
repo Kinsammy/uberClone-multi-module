@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS authorities (
                                            CONSTRAINT authorities_feature_id_fk FOREIGN KEY (feature_id) REFERENCES features(id)
 );
 
-CREATE TABLE IF NOT EXISTS roles (
-                                     id BIGSERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS role (
+                                     id BIGINT PRIMARY KEY,
                                      created_by VARCHAR(255),
                                      created_date TIMESTAMP NULL,
                                      "last_modified_by" VARCHAR(255),
@@ -47,18 +47,19 @@ CREATE TABLE IF NOT EXISTS roles (
                                      description VARCHAR(500) NULL,
                                      name VARCHAR(100) NOT NULL,
                                      status INT NOT NULL,
-                                     CONSTRAINT uk_roles_name UNIQUE (name)
+                                     CONSTRAINT uk_role_name UNIQUE (name)
 );
 
 CREATE TABLE IF NOT EXISTS role_authorities (
                                                 role_id BIGINT NOT NULL,
                                                 authority_id BIGINT NOT NULL,
-                                                CONSTRAINT roles_authorities_pk UNIQUE (role_id, authority_id),
-                                                CONSTRAINT roles_authorities_authorities_id_pk FOREIGN KEY (authority_id) References authorities (id),
+                                                CONSTRAINT role_authorities_pk UNIQUE (role_id, authority_id),
+                                                CONSTRAINT role_authorities_authorities_id_fk FOREIGN KEY (authority_id) REFERENCES authorities (id),
                                                 CONSTRAINT role_authorities_roles_id_fk FOREIGN KEY (role_id) REFERENCES roles (id)
 );
 
-create index role_authorities_role_id_authority_id_index on role_authorities (role_id, authority_id);
+
+CREATE INDEX role_authorities_role_id_authority_id_index_2 ON role_authorities ("role_id", "authority_id");
 
 
 CREATE TABLE IF NOT EXISTS users (

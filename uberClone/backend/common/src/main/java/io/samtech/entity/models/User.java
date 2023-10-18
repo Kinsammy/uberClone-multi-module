@@ -1,12 +1,10 @@
 package io.samtech.entity.models;
 
+import io.samtech.entity.models.Role;
 import io.samtech.entity.rdb.AbstractJdbcEntity;
 import io.samtech.entity.rdb.Token;
-import io.samtech.security.SecuredUser;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,15 +13,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import static io.samtech.constants.CommonConstants.EntityName.USER;
 
 @Getter
 @Setter
-@Table(value = USER)
-public class User extends AbstractJdbcEntity<Long> implements UserDetails {
+@Builder
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+//@Table(value = USER)
+public class User implements UserDetails {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     private String username;
 
     private String preferredUsername;
@@ -59,7 +63,7 @@ public class User extends AbstractJdbcEntity<Long> implements UserDetails {
     private Integer locked;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @MappedCollection(idColumn = "user_id")
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Token> tokens;
 
 

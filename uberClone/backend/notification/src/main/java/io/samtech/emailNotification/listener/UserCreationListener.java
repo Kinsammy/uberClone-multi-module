@@ -3,7 +3,7 @@ package io.samtech.emailNotification.listener;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.samtech.application.event.event.UserCreationEvent;
 import io.samtech.entity.EMail;
-import io.samtech.entity.rdb.User;
+import io.samtech.entity.models.User;
 import io.samtech.exception.UserVerifyCodeException;
 import io.samtech.serviceApi.user.UserService;
 import io.samtech.emailNotification.sendinBlueService.iEmailNotificationService;

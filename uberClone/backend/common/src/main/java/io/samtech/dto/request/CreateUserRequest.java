@@ -1,5 +1,6 @@
 package io.samtech.dto.request;
 
+import io.samtech.entity.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,11 @@ public class CreateUserRequest {
 
     private String givenName;
     private String phoneNumber;
+    private String rawPassword;
+    private String password;
 
 //    @NotNull
-    private List<Long> roleIds;
+    private Role role;
 
 
 }

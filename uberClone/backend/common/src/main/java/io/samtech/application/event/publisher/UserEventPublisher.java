@@ -1,7 +1,7 @@
 package io.samtech.application.event.publisher;
 
 import io.samtech.application.event.event.UserCreationEvent;
-import io.samtech.entity.rdb.User;
+import io.samtech.entity.models.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

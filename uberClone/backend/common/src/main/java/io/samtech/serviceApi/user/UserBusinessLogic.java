@@ -1,6 +1,6 @@
 package io.samtech.serviceApi.user;
 
-import io.samtech.entity.rdb.User;
+import io.samtech.entity.models.User;
 
 public interface UserBusinessLogic {
     void createProfileTypeUser(User user);

@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.sametech.library_management_system.data.models.users.Permission.*;
+
+import static io.samtech.entity.models.Permission.*;
 
 
 @RequiredArgsConstructor

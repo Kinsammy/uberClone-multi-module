@@ -9,18 +9,19 @@ import io.samtech.dto.response.ResetPasswordResponse;
 import io.samtech.entity.models.User;
 import io.samtech.exception.UserAlreadyExistByEmailException;
 import io.samtech.exception.UserAlreadyExitByPhoneNumberException;
-import io.samtech.repository.rdb.UserRepository;
+import io.samtech.repository.model.UserRepository;
 import io.samtech.serviceApi.user.UserService;
 import io.samtech.utils.DataProcessor;
+import io.samtech.utils.PasswordGeneratorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
 import java.util.UUID;
 
 import static io.samtech.configuration.message.Translator.eval;
@@ -64,10 +65,10 @@ public class UserServiceImpl implements UserService {
                 .givenName(user.getGivenName())
                 .username(UUID.randomUUID().toString())
                 .unsigned_name(StringUtils.stripAccents(fullName))
-                .roles(user.getRole())
+                .role(user.getRole())
                 .rawPassword(user.getRawPassword())
                 .password(passwordEncoder.encode(user.getRawPassword()))
-                .enabled(CommonConstants.EntityStatus.ENABLED)
+                .enabled(true)
                 .build();
         return userRepository.save(userDetails);
     }
@@ -100,9 +101,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByPhoneNumber(String phoneNumber) {
-        User user = userRepository.findUserByPhoneNumber(phoneNumber)
+        return userRepository.findUserByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new UsernameNotFoundException(eval("app.user.exception.not-found")));
-        return user;
     }
 
     @Override
@@ -127,7 +127,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void creatUser(CreateUserRequest request) {
-        var user = new User();
+        User user = CreateUserDetails(request);
+        userEventPublisher.publishVerificationEvent(user);
+    }
+
+    @NotNull
+    private User CreateUserDetails(CreateUserRequest request) {
+        if (existsByEmail(request.getEmail())){
+            throw new UserAlreadyExistByEmailException();
+        }
+
+        if (existsByPhoneNumber(request.getPhoneNumber())){
+            throw new UserAlreadyExitByPhoneNumberException();
+        }
+
+        final String fullName = DataProcessor.joinWihSpaceDelimiter(request.getGivenName(), request.getMiddleName(), request.getFamilyName());
+
+        User user = User.builder()
+                .name(fullName)
+                .locked(CommonConstants.EntityStatus.UNLOCKED)
+                .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .gender(request.getGender())
+
+                .familyName(request.getFamilyName())
+                .givenName(request.getGivenName())
+                .username(UUID.randomUUID().toString())
+                .unsigned_name(StringUtils.stripAccents(fullName))
+                .role(request.getRole())
+                .rawPassword(request.getRawPassword())
+                .password(passwordEncoder.encode(request.getRawPassword()))
+                .enabled(true)
+                .build();
+        userRepository.save(user);
+        return user;
     }
 
     @Override

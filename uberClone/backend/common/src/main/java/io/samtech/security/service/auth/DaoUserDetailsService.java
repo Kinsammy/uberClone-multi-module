@@ -1,8 +1,9 @@
 package io.samtech.security.service.auth;
 
 import io.samtech.configuration.annotation.validator.PhoneNumberValidator;
-import io.samtech.entity.rdb.User;
+import io.samtech.entity.models.User;
 import io.samtech.security.DomainUserDetailsService;
+import io.samtech.security.SecuredUser;
 import io.samtech.security.SecuredUserDetails;
 import io.samtech.serviceApi.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,13 +28,13 @@ public class DaoUserDetailsService implements DomainUserDetailsService {
     @Override
     public SecuredUserDetails loadUserById(Long userId) {
         User user = userService.findActiveUserById(userId);
-        return new SecuredUserDetails(user, userId.toString());
+        return new SecuredUserDetails((SecuredUser) user, userId.toString());
     }
 
     @Override
     public SecuredUserDetails loadUserByPreferredUsername(String preferredUserName) {
         User user = userService.findActiveUserByPreferredUsername(preferredUserName);
-        return new SecuredUserDetails(user, preferredUserName);
+        return new SecuredUserDetails((SecuredUser) user, preferredUserName);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class DaoUserDetailsService implements DomainUserDetailsService {
             throw new UsernameNotFoundException("User not found with provided principal");
         }
 
-        return new SecuredUserDetails(user, lowercasePrincipal);
+        return new SecuredUserDetails((SecuredUser) user, lowercasePrincipal);
     }
 
     private AuthenticationType determineAuthenticationType(String principal) {
