@@ -64,6 +64,7 @@ public class PassengerServiceApiImpl implements PassengerProfileServiceApi {
         Passenger passengerProfile = new Passenger();
         passengerProfile.setUserDetails(user);
         savePassengerProfile(passengerProfile);
+
         userEventPublisher.publishVerificationEvent(passengerProfile.getUserDetails());
     }
 

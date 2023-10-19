@@ -5,6 +5,7 @@ import io.samtech.application.event.event.UserCreationEvent;
 import io.samtech.entity.EMail;
 import io.samtech.entity.models.User;
 import io.samtech.exception.UserVerifyCodeException;
+import io.samtech.serviceApi.token.ITokenService;
 import io.samtech.serviceApi.user.UserService;
 import io.samtech.emailNotification.sendinBlueService.iEmailNotificationService;
 import io.samtech.utils.DataProcessor;
@@ -18,6 +19,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 
 import org.springframework.stereotype.Component;
+
+import javax.mail.MessagingException;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -36,40 +39,42 @@ public class UserCreationListener implements ApplicationListener<UserCreationEve
 
     private final MessageSource messages;
     private final iEmailNotificationService iEmailNotificationService;
-    private final UserService userService;
-    private final Environment environment;
+    private final ITokenService tokenService;
 
 
     @Override
     public void onApplicationEvent(@NotNull UserCreationEvent event) {
         try {
             this.sendNotify(event);
-        } catch (UnirestException e) {
+        } catch (UnirestException | MessagingException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void sendNotify(final UserCreationEvent event) throws UnirestException {
+    private void sendNotify(final UserCreationEvent event) throws UnirestException, MessagingException, IOException {
         log.info("sendNotify");
-        EMail email = onSignUp(event.getUser());
+        String token = tokenService.generateAndSaveToken(event.getUser());
+        log.info(token);
+        EMail email = onSignUp(event.getUser(), token);
         iEmailNotificationService.sendMail(email);
     }
 
-    private EMail onSignUp(final User user) {
+    private EMail onSignUp(final User user, String token) throws MessagingException, IOException {
         HashMap<String, String> map = new HashMap<>();
         final String confirmationUrl =createEmailVerifyLink(user.getId());
         log.info("Verifying {}", confirmationUrl);
         map.put("name", user.getName());
-        map.put("username", user.getUsername());
-        map.put("password", user.getPassword());
-        map.put("verifylink", confirmationUrl);
+        map.put("token", token);
+//        map.put("username", user.getUsername());
+//        map.put("password", user.getPassword());
+//        map.put("verifylink", confirmationUrl);
         EMail email = EMail.builder()
                 .receiver(Set.of(user.getEmail()))
                 .sender("SamTech UberClone")
                 .subject("Account Creation Email Verification")
                 .templateName("AccountRegistrationEmailToken.ftlh")
                 .templateParams(map)
-                .templateId(1L)
+                .templateId(4L)
                 .bodyText("Registration Confirmation token is "+ confirmationUrl)
                 .build();
 

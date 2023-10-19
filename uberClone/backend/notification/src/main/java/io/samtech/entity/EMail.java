@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,5 +30,15 @@ public class EMail {
                 ccTo,
                 subject,
                 templateName);
+    }
+
+    public void setReceiver(Set<String> receiver) {
+        this.receiver = receiver;
+    }
+
+
+    public void setReceiver(String sendTo) {
+        this.receiver = new HashSet<>();
+        this.receiver.add(sendTo);
     }
 }

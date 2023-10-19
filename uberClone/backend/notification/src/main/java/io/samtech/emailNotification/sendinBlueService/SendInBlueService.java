@@ -57,6 +57,7 @@ public class SendInBlueService implements iEmailNotificationService {
             System.err.println("Exception when calling TransactionalEmailsApi#sendTransacEmail");
             e.printStackTrace();
         }
+
         return null;
     }
 
