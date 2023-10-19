@@ -28,13 +28,13 @@ public class DaoUserDetailsService implements DomainUserDetailsService {
     @Override
     public SecuredUserDetails loadUserById(Long userId) {
         User user = userService.findActiveUserById(userId);
-        return new SecuredUserDetails((SecuredUser) user, userId.toString());
+        return new SecuredUserDetails( user);
     }
 
     @Override
     public SecuredUserDetails loadUserByPreferredUsername(String preferredUserName) {
         User user = userService.findActiveUserByPreferredUsername(preferredUserName);
-        return new SecuredUserDetails((SecuredUser) user, preferredUserName);
+        return new SecuredUserDetails(user);
     }
 
     @Override
@@ -51,11 +51,11 @@ public class DaoUserDetailsService implements DomainUserDetailsService {
             }
             case PHONE_NUMBER -> {
                 user = userService.findUserByPhoneNumber(principal);
-                authenticationType = AuthenticationType.EMAIL;
+                authenticationType = AuthenticationType.PHONE_NUMBER;
             }
             default -> {
                 user = userService.findUserByUsername(lowercasePrincipal);
-                authenticationType = AuthenticationType.EMAIL;
+                authenticationType = AuthenticationType.USERNAME;
             }
 
         }
@@ -63,7 +63,7 @@ public class DaoUserDetailsService implements DomainUserDetailsService {
             throw new UsernameNotFoundException("User not found with provided principal");
         }
 
-        return new SecuredUserDetails((SecuredUser) user, lowercasePrincipal);
+        return new SecuredUserDetails(user);
     }
 
     private AuthenticationType determineAuthenticationType(String principal) {

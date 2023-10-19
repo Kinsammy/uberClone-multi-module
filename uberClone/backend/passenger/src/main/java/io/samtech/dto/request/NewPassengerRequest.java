@@ -26,7 +26,7 @@ public class NewPassengerRequest {
     private String phoneNumber;
 //
 //    @NotNull
-    @JsonProperty(value = "password")
+//    @JsonProperty(value = "password")
 //  @ValidPassword
     private String rawPassword;
 

@@ -6,6 +6,7 @@ import io.samtech.dto.request.CreateUserRequest;
 import io.samtech.dto.request.RegisterUserRequest;
 import io.samtech.dto.request.ResetPasswordRequest;
 import io.samtech.dto.response.ResetPasswordResponse;
+import io.samtech.entity.models.Role;
 import io.samtech.entity.models.User;
 import io.samtech.exception.UserAlreadyExistByEmailException;
 import io.samtech.exception.UserAlreadyExitByPhoneNumberException;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.UUID;
 
 import static io.samtech.configuration.message.Translator.eval;
@@ -68,7 +70,7 @@ public class UserServiceImpl implements UserService {
                 .role(user.getRole())
                 .rawPassword(user.getRawPassword())
                 .password(passwordEncoder.encode(user.getRawPassword()))
-                .enabled(true)
+                .enabled(CommonConstants.EntityStatus.ENABLED)
                 .build();
         return userRepository.save(userDetails);
     }
@@ -132,7 +134,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @NotNull
-    private User CreateUserDetails(CreateUserRequest request) {
+    public User CreateUserDetails(CreateUserRequest request) {
         if (existsByEmail(request.getEmail())){
             throw new UserAlreadyExistByEmailException();
         }
@@ -154,10 +156,10 @@ public class UserServiceImpl implements UserService {
                 .givenName(request.getGivenName())
                 .username(UUID.randomUUID().toString())
                 .unsigned_name(StringUtils.stripAccents(fullName))
-                .role(request.getRole())
+                .role(Role.BASIC)
                 .rawPassword(request.getRawPassword())
                 .password(passwordEncoder.encode(request.getRawPassword()))
-                .enabled(true)
+                .enabled(CommonConstants.EntityStatus.ENABLED)
                 .build();
         userRepository.save(user);
         return user;

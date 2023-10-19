@@ -1,25 +1,21 @@
 package io.samtech.entity;
 
-import io.samtech.constants.CommonConstants;
-import io.samtech.entity.rdb.Profile;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import io.samtech.entity.models.User;
+import jakarta.persistence.*;
 import lombok.*;
 
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class Passenger extends Profile {
+public class Passenger  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @Builder
-    public Passenger(){
-        super(CommonConstants.ProfileType.PASSENGER);
-    }
+    @OneToOne(cascade={CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonUnwrapped
+    private User userDetails;
 
 }

@@ -1,6 +1,7 @@
 package io.samtech.security;
 
 import io.samtech.constants.CommonConstants;
+import io.samtech.entity.models.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import one.util.streamex.StreamEx;
@@ -13,18 +14,16 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Getter
 @RequiredArgsConstructor
 public class SecuredUserDetails implements UserDetails {
-    @Getter
     @NonNull
-    private final SecuredUser user;
-    @NonNull
-    private final String principal;
+    private final User user;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return StreamEx.of(user.getAuthorityNames())
-                .map(SimpleGrantedAuthority::new)
+        return StreamEx.of(user.getRole().getAuthorities())
                 .collect(Collectors.toList());
     }
 
@@ -35,7 +34,7 @@ public class SecuredUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return principal;
+        return user.getEmail();
     }
 
     @Override

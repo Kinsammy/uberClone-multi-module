@@ -43,9 +43,9 @@ public class PassengerUserHandlerServiceImpl implements UserHandlerServiceApi {
                .rawPassword(user.getRawPassword())
                .preferredUsername(UUID.randomUUID().toString())
                .password(passwordEncoder.encode(user.getPassword()))
-               .profile(user.getProfile())
+//               .profile(user.getProfile())
                .role(passengerRole)
-               .enabled(true)
+               .enabled(CommonConstants.EntityStatus.ENABLED)
                .locked(CommonConstants.EntityStatus.UNLOCKED)
                .build();
        return userRepository.save(userToSave);
