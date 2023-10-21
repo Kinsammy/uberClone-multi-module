@@ -1,10 +1,11 @@
-package io.samtech.emailNotification.listener;
+package io.samtech.listener;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.samtech.application.event.event.UserCreationEvent;
 import io.samtech.entity.EMail;
 import io.samtech.entity.models.User;
 import io.samtech.exception.UserVerifyCodeException;
+import io.samtech.sendinblueConfig.service.IMailService;
 import io.samtech.serviceApi.token.ITokenService;
 import io.samtech.serviceApi.user.UserService;
 import io.samtech.emailNotification.sendinBlueService.iEmailNotificationService;
@@ -37,9 +38,13 @@ public class UserCreationListener implements ApplicationListener<UserCreationEve
     @Value(value = "${spring.application.secret-key}")
     private String appKey;
 
-    private final MessageSource messages;
-    private final iEmailNotificationService iEmailNotificationService;
+    @Value(value = "${spring_mail_sender}")
+    private String sender;
+//
+//    private final MessageSource messages;
+//    private final iEmailNotificationService iEmailNotificationService;
     private final ITokenService tokenService;
+    private final IMailService mailService;
 
 
     @Override
@@ -56,7 +61,7 @@ public class UserCreationListener implements ApplicationListener<UserCreationEve
         String token = tokenService.generateAndSaveToken(event.getUser());
         log.info(token);
         EMail email = onSignUp(event.getUser(), token);
-        iEmailNotificationService.sendMail(email);
+        mailService.sendMail(email);
     }
 
     private EMail onSignUp(final User user, String token) throws MessagingException, IOException {
@@ -70,7 +75,7 @@ public class UserCreationListener implements ApplicationListener<UserCreationEve
 //        map.put("verifylink", confirmationUrl);
         EMail email = EMail.builder()
                 .receiver(Set.of(user.getEmail()))
-                .sender("SamTech UberClone")
+                .sender(sender)
                 .subject("Account Creation Email Verification")
                 .templateName("AccountRegistrationEmailToken.ftlh")
                 .templateParams(map)
