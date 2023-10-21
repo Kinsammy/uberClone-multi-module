@@ -41,7 +41,7 @@ public class SendInBlueService implements iEmailNotificationService {
         TransactionalEmailsApi apiInstance = new TransactionalEmailsApi();
         SendSmtpEmail sendSmtpEmail = new SendSmtpEmail();
         sendSmtpEmail.setSender(new SendSmtpEmailSender().email(SENDER));
-        String sendTo = eMail.getReceiver().toString();
+        String sendTo = eMail.getTo().toString();
         sendTo = sendTo.substring(1, sendTo.length() -1);
         sendSmtpEmail.setTo(List.of(new SendSmtpEmailTo().email(sendTo)));
         sendSmtpEmail.setSubject(eMail.getSubject());
