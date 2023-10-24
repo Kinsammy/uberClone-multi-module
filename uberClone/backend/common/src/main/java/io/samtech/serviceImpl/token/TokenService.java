@@ -39,6 +39,6 @@ public class TokenService implements ITokenService {
 
     @Override
     public void deleteToken(Token token) {
-
+        tokenRepository.delete(token);
     }
 }

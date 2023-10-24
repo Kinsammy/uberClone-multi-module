@@ -5,17 +5,18 @@ import io.samtech.constants.CommonConstants;
 import io.samtech.dto.request.CreateUserRequest;
 import io.samtech.dto.request.RegisterUserRequest;
 import io.samtech.dto.request.ResetPasswordRequest;
-import io.samtech.dto.response.ResetPasswordResponse;
 import io.samtech.entity.models.Role;
 import io.samtech.entity.models.User;
+import io.samtech.entity.rdb.Token;
 import io.samtech.exception.UserAlreadyExistByEmailException;
 import io.samtech.exception.UserAlreadyExitByPhoneNumberException;
+import io.samtech.exception.UserNotExistedException;
 import io.samtech.exception.UserVerifyCodeException;
 import io.samtech.repository.model.UserRepository;
+import io.samtech.serviceApi.token.ITokenService;
 import io.samtech.serviceApi.user.UserService;
 import io.samtech.utils.DataProcessor;
 import io.samtech.utils.DefaultInstance;
-import io.samtech.utils.PasswordGeneratorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Base64;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -42,6 +43,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserEventPublisher userEventPublisher;
+    private final ITokenService tokenService;
     @Value(value = "${spring.application.secret-key}")
     private String appKey;
 
@@ -59,11 +61,21 @@ public class UserServiceImpl implements UserService {
         userRepository.findUserById(userId).ifPresent(user -> {
             if (Objects.equals(user.getEmailVerified(), CommonConstants.EntityStatus.UNVERIFIED)){
                 user.setEmailVerified(CommonConstants.EntityStatus.VERIFIED);
+                user.setLocked(CommonConstants.EntityStatus.LOCKED);
+                user.setEnabled(CommonConstants.EntityStatus.ENABLED);
                 userRepository.save(user);
+
+                List<Token> userTokens = user.getTokens();
+                userTokens.get(0).setExpired(true);
+                for (Token userToken : userTokens) {
+                    tokenService.deleteToken(userToken);
+                }
             }
             else throw new UserVerifyCodeException.Verified();
         });
     }
+
+
 
     private Long getUserIdFromVerifyToken(String token) {
         try{
@@ -208,12 +220,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sendResetPasswordToEmail(String email) {
-
+    public void requestResetPassword(String email) {
+        var foundUserEmail = userRepository.findUserByEmail(email);
+        if (foundUserEmail.isPresent()){
+            userEventPublisher.publishResetPassword(foundUserEmail.get());
+        } else {
+            throw new UserNotExistedException();
+        }
     }
 
     @Override
-    public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
-        return null;
+    public void resetPassword(ResetPasswordRequest request) {
+
     }
 }

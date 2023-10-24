@@ -25,15 +25,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Map;
 
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class UserCreationListener implements ApplicationListener<UserCreationEvent> {
-    @Value(value = "${spring.application.secret-key}")
-    private String appKey;
-
     @Value(value = "${spring_mail_sender}")
     private String sender;
 //
@@ -64,7 +62,7 @@ public class UserCreationListener implements ApplicationListener<UserCreationEve
 
         // Load the content of the email template
         String emailTemplateContent = loadEmailTemplateContent("AccountRegistrationEmailToken.ftlh");
-
+        emailTemplateContent = loadContents(emailTemplateContent, map);
         email.getTo().add(new Recipient(
                 event.getUser().getName(),
                 event.getUser().getEmail()
@@ -75,6 +73,15 @@ public class UserCreationListener implements ApplicationListener<UserCreationEve
         email.setTemplateParams(map);
 
         mailService.sendMail(email);
+    }
+
+    private String loadContents(String templateContent, HashMap<String, String> contents) {
+        for (Map.Entry<String, String> entry : contents.entrySet()) {
+            String placeHolder = "${" + entry.getKey() + "}";
+            String value = entry.getValue();
+            templateContent = templateContent.replace(placeHolder, value);
+        }
+        return templateContent;
     }
 
     // Method to load the content of an email template file

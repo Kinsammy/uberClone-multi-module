@@ -22,7 +22,6 @@ public class EMail {
     private String subject;
     private Sender sender;
     private List<File> attachments;
-    private String templateName;
     private String htmlContent;
     private Map<String, String> templateParams;
     private Long templateId;
@@ -32,8 +31,8 @@ public class EMail {
         return String.format("EmailContent{sendTo=%s, ccTo=%s, subject='%s', mailTemplate=%s}",
                 to,
                 ccTo,
-                subject,
-                templateName);
+                subject
+        );
     }
 
     public void setReceiver(Set<Recipient> receiver) {

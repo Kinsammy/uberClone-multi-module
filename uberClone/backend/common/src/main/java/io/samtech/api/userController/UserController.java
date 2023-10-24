@@ -2,6 +2,7 @@ package io.samtech.api.userController;
 
 import io.samtech.configuration.response.Response;
 import io.samtech.dto.request.CreateUserRequest;
+import io.samtech.dto.request.PasswordResetRequest;
 import io.samtech.dto.request.UserVerifyRequest;
 import io.samtech.serviceApi.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +35,13 @@ public class UserController {
     public Response<String> verifyUserEmail(@Valid @RequestBody UserVerifyRequest request){
         userService.verifyCreatedUserEmail(request.getToken());
         return Response.ok("app.user.verify-account.message.success");
+    }
+    
+    @PostMapping(path = "/public/reset-password/request", produces = "application/json")
+    @Operation(summary = "Get Token To Reset Password, For All Users")
+    public Response<String> resetPasswordRequest(@Valid @RequestBody PasswordResetRequest request){
+        userService.requestResetPassword(request.getEmail());
+        return Response.ok("app.user.reset-account.message.success");
     }
 
 
