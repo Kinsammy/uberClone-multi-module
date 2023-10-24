@@ -3,13 +3,18 @@ package io.samtech.serviceImpl.token;
 import io.samtech.constants.CommonConstants;
 import io.samtech.entity.models.User;
 import io.samtech.entity.rdb.Token;
+import io.samtech.exception.TokenBusinessException;
 import io.samtech.repository.rdb.TokenRepository;
 import io.samtech.security.currentSecurity.JwtService;
 import io.samtech.serviceApi.token.ITokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Optional;
+
+import static io.samtech.constants.CommonConstants.CommonMessages.*;
 
 @Service
 @AllArgsConstructor
@@ -33,8 +38,19 @@ public class TokenService implements ITokenService {
     }
 
     @Override
-    public Optional<Token> validateReceivedToken(User appUser, String token) {
-        return Optional.empty();
+    public String validateReceivedToken(String token) {
+       final Token receivedToken = tokenRepository.findByToken(token)
+               .orElseThrow(TokenBusinessException::new);
+       if (receivedToken == null){
+           return TOKEN_INVALID;
+       }
+
+       final Calendar calendar = Calendar.getInstance();
+       if (receivedToken.getExpiryTime().isAfter(LocalDateTime.now())){
+           tokenRepository.delete(receivedToken);
+           return TOKEN_EXPIRED;
+       }
+       return TOKEN_VALID;
     }
 
     @Override

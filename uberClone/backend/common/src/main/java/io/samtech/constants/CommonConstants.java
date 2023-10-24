@@ -99,4 +99,10 @@ public abstract class CommonConstants {
     public static abstract class TokenType {
         public static final Integer BEARER = 1;
     }
+
+    public static abstract class CommonMessages {
+        public static final String TOKEN_INVALID = "invalidToken";
+        public static final String TOKEN_EXPIRED = "expired";
+        public static final String TOKEN_VALID = "valid";
+    }
 }

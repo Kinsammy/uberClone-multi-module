@@ -8,11 +8,9 @@ import io.samtech.dto.request.ResetPasswordRequest;
 import io.samtech.entity.models.Role;
 import io.samtech.entity.models.User;
 import io.samtech.entity.rdb.Token;
-import io.samtech.exception.UserAlreadyExistByEmailException;
-import io.samtech.exception.UserAlreadyExitByPhoneNumberException;
-import io.samtech.exception.UserNotExistedException;
-import io.samtech.exception.UserVerifyCodeException;
+import io.samtech.exception.*;
 import io.samtech.repository.model.UserRepository;
+import io.samtech.repository.rdb.TokenRepository;
 import io.samtech.serviceApi.token.ITokenService;
 import io.samtech.serviceApi.user.UserService;
 import io.samtech.utils.DataProcessor;
@@ -33,6 +31,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import static io.samtech.configuration.message.Translator.eval;
+import static io.samtech.constants.CommonConstants.CommonMessages.TOKEN_VALID;
 
 
 @Slf4j
@@ -44,6 +43,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserEventPublisher userEventPublisher;
     private final ITokenService tokenService;
+    private final TokenRepository tokenRepository;
     @Value(value = "${spring.application.secret-key}")
     private String appKey;
 
@@ -62,17 +62,11 @@ public class UserServiceImpl implements UserService {
             if (Objects.equals(user.getEmailVerified(), CommonConstants.EntityStatus.UNVERIFIED)){
                 user.setEmailVerified(CommonConstants.EntityStatus.VERIFIED);
                 user.setLocked(CommonConstants.EntityStatus.LOCKED);
-                user.setEnabled(CommonConstants.EntityStatus.ENABLED);
                 userRepository.save(user);
-
-                List<Token> userTokens = user.getTokens();
-                userTokens.get(0).setExpired(true);
-                for (Token userToken : userTokens) {
-                    tokenService.deleteToken(userToken);
-                }
             }
             else throw new UserVerifyCodeException.Verified();
         });
+        tokenRepository.deleteByToken(token);
     }
 
 
@@ -231,6 +225,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPassword(ResetPasswordRequest request) {
+        String receivedToken = tokenService.validateReceivedToken(request.getToken());
+        User user;
 
+        if (!Objects.equals(receivedToken, TOKEN_VALID)) {
+            throw new InvalidTokenException(receivedToken);
+        } else {
+            final Token token = tokenRepository.findByToken(request.getToken())
+                    .orElseThrow(TokenBusinessException::new);
+            user = findActiveUserById(token.getUser().getId());
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            saveUser(user);
+            tokenRepository.deleteByToken(request.getToken());
+        }
     }
 }
