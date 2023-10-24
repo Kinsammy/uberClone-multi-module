@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 
@@ -55,49 +57,69 @@ public class UserCreationListener implements ApplicationListener<UserCreationEve
         String token = tokenService.generateAndSaveToken(event.getUser());
         log.info(token);
         EMail email = new EMail();
+        HashMap<String, String> map = new HashMap<>();
+        map.put("name", event.getUser().getName());
+        map.put("token", token);
+
+
+        // Load the content of the email template
+        String emailTemplateContent = loadEmailTemplateContent("AccountRegistrationEmailToken.ftlh");
+
         email.getTo().add(new Recipient(
                 event.getUser().getName(),
                 event.getUser().getEmail()
         ));
         email.setSender(new Sender("UberClone", sender));
         email.setSubject("Account Creation Email Verification");
-        email.setTemplateName("AccountRegistrationEmailToken.ftlh");
-        email.setHtmlContent("Registration Confirmation token is " + token);
-
-//        EMail email = onSignUp(event.getUser(), token);
+        email.setHtmlContent(emailTemplateContent); // Set the template content
+        email.setTemplateParams(map);
 
         mailService.sendMail(email);
     }
 
-    private EMail onSignUp(final User user, String token) throws MessagingException, IOException {
-        HashMap<String, String> map = new HashMap<>();
-        map.put("name", user.getName());
-        map.put("token", token);
-//        map.put("username", user.getUsername());
-//        map.put("password", user.getPassword());
-//        map.put("verifylink", confirmationUrl);
-//        EMail email = EMail.builder()
-////                .to((user.getName(), user.getEmail()))
-//                .sender(new Sender("UberClone", sender))
-//                .subject("Account Creation Email Verification")
-//                .templateName("AccountRegistrationEmailToken.ftlh")
-//                .templateParams(map)
-//                .templateId(4L)
-//                .htmlContent("Registration Confirmation token is " + confirmationUrl)
-//                .build();
-
-        EMail email = new EMail();
-        email.getTo().add(new Recipient(
-                user.getName(), user.getEmail()));
-        email.setSender(new Sender("UberClone", sender));
-        email.setSubject("Account Creation Email Verification");
-        email.setTemplateName("AccountRegistrationEmailToken.ftlh");
-        email.setTemplateParams(map);
-        email.setHtmlContent("Registration Confirmation token is " );
-
-
-        return email;
+    // Method to load the content of an email template file
+    private String loadEmailTemplateContent(String templateFileName) throws IOException {
+        // Load the content of the template from the file
+        // You may need to adjust this code based on how your templates are stored
+        // This is a simplified example assuming the templates are in a folder named "templates"
+        String templateFilePath = "templates/" + templateFileName;
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(templateFilePath);
+        if (inputStream != null) {
+            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        } else {
+            throw new IOException("Email template file not found: " + templateFileName);
+        }
     }
+
+//    private EMail onSignUp(final User user, String token) throws MessagingException, IOException {
+//        HashMap<String, String> map = new HashMap<>();
+//        map.put("name", user.getName());
+//        map.put("token", token);
+////        map.put("username", user.getUsername());
+////        map.put("password", user.getPassword());
+////        map.put("verifylink", confirmationUrl);
+////        EMail email = EMail.builder()
+//////                .to((user.getName(), user.getEmail()))
+////                .sender(new Sender("UberClone", sender))
+////                .subject("Account Creation Email Verification")
+////                .templateName("AccountRegistrationEmailToken.ftlh")
+////                .templateParams(map)
+////                .templateId(4L)
+////                .htmlContent("Registration Confirmation token is " + confirmationUrl)
+////                .build();
+//
+//        EMail email = new EMail();
+//        email.getTo().add(new Recipient(
+//                user.getName(), user.getEmail()));
+//        email.setSender(new Sender("UberClone", sender));
+//        email.setSubject("Account Creation Email Verification");
+//        email.setTemplateName("AccountRegistrationEmailToken.ftlh");
+//        email.setTemplateParams(map);
+//        email.setHtmlContent("Registration Confirmation token is " );
+//
+//
+//        return email;
+//    }
 
 //    private String createEmailVerifyLink(Long userId) {
 //        try {

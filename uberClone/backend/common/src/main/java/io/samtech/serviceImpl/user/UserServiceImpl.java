@@ -10,20 +10,25 @@ import io.samtech.entity.models.Role;
 import io.samtech.entity.models.User;
 import io.samtech.exception.UserAlreadyExistByEmailException;
 import io.samtech.exception.UserAlreadyExitByPhoneNumberException;
+import io.samtech.exception.UserVerifyCodeException;
 import io.samtech.repository.model.UserRepository;
 import io.samtech.serviceApi.user.UserService;
 import io.samtech.utils.DataProcessor;
+import io.samtech.utils.DefaultInstance;
 import io.samtech.utils.PasswordGeneratorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Base64;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.UUID;
 
 import static io.samtech.configuration.message.Translator.eval;
@@ -37,11 +42,38 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserEventPublisher userEventPublisher;
+    @Value(value = "${spring.application.secret-key}")
+    private String appKey;
 
 
     @Override
     public void createProfileTypeUser(User user) {
         User createUser = createInternalUser(user);
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void verifyAccountWithToken(String token) {
+        final Long userId = getUserIdFromVerifyToken(token);
+        userRepository.findUserById(userId).ifPresent(user -> {
+            if (Objects.equals(user.getEmailVerified(), CommonConstants.EntityStatus.UNVERIFIED)){
+                user.setEmailVerified(CommonConstants.EntityStatus.VERIFIED);
+                userRepository.save(user);
+            }
+            else throw new UserVerifyCodeException.Verified();
+        });
+    }
+
+    private Long getUserIdFromVerifyToken(String token) {
+        try{
+            byte[] rawData = DataProcessor.decrypt(Base64.getDecoder().decode(token), appKey);
+            return DefaultInstance.OBJECT_MAPPER.readValue(rawData, Long.class);
+        }
+        catch(Exception e){
+            log.error("Cannot decode info from verify code", e);
+            throw new UserVerifyCodeException.Invalid();
+        }
     }
 
     private User createInternalUser(User user) {

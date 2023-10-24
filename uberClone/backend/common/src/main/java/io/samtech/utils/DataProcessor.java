@@ -28,4 +28,8 @@ public class DataProcessor {
     private static byte[] getUTF8Bytes(final String input) {
         return input.getBytes(StandardCharsets.UTF_8);
     }
+
+    public static byte[] decrypt(final byte[] data, final String key) throws GeneralSecurityException {
+        return DefaultInstance.CRYPTO.decrypt(data, key.toCharArray());
+    }
 }
