@@ -7,8 +7,10 @@ import io.samtech.exception.TokenBusinessException;
 import io.samtech.repository.rdb.TokenRepository;
 import io.samtech.security.currentSecurity.JwtService;
 import io.samtech.serviceApi.token.ITokenService;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -21,14 +23,17 @@ import static io.samtech.constants.CommonConstants.CommonMessages.*;
 public class TokenService implements ITokenService {
     private final TokenRepository tokenRepository;
     private final JwtService jwtService;
+    private final EntityManager entityManager;
 
     @Override
+    @Transactional
     public String generateAndSaveToken(User user) {
         Optional<Token> existingToken = tokenRepository.findTokenByUser(user);
         existingToken.ifPresent(tokenRepository::delete);
         String generateToken = jwtService.generateAccessToken(user);
 
         var token = Token.builder()
+                .user(entityManager.merge(user))
                 .token(generateToken)
                 .tokenType(CommonConstants.TokenType.BEARER)
                 .build();
@@ -40,13 +45,13 @@ public class TokenService implements ITokenService {
     @Override
     public String validateReceivedToken(String token) {
        final Token receivedToken = tokenRepository.findByToken(token)
-               .orElseThrow(TokenBusinessException::new);
+               .orElseThrow();
        if (receivedToken == null){
            return TOKEN_INVALID;
        }
 
-       final Calendar calendar = Calendar.getInstance();
-       if (receivedToken.getExpiryTime().isAfter(LocalDateTime.now())){
+
+       if (receivedToken.getExpiryTime().isBefore(LocalDateTime.now())){
            tokenRepository.delete(receivedToken);
            return TOKEN_EXPIRED;
        }

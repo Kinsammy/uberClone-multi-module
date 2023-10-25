@@ -215,28 +215,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void requestResetPassword(String email) {
-        var foundUserEmail = userRepository.findUserByEmail(email);
-        if (foundUserEmail.isPresent()){
-            userEventPublisher.publishResetPassword(foundUserEmail.get());
-        } else {
-            throw new UserNotExistedException();
-        }
+        var foundUser = userRepository.findUserByEmail(email)
+                .orElseThrow(UserNotExistedException::new);
+
+            userEventPublisher.publishResetPassword(foundUser);
     }
 
     @Override
     public void resetPassword(ResetPasswordRequest request) {
         String receivedToken = tokenService.validateReceivedToken(request.getToken());
-        User user;
 
         if (!Objects.equals(receivedToken, TOKEN_VALID)) {
             throw new InvalidTokenException(receivedToken);
         } else {
-            final Token token = tokenRepository.findByToken(request.getToken())
-                    .orElseThrow(TokenBusinessException::new);
-            user = findActiveUserById(token.getUser().getId());
+            Token token = tokenRepository.findByToken(request.getToken())
+                    .orElseThrow(
+                            () -> new TokenBusinessException("Token not found"));
+
+
+            if (token.getUser() == null) {
+                throw new TokenBusinessException("Token is not associated with a valid user");
+            }
+
+            User user = findActiveUserById(token.getUser().getId());
+
+            if (user == null) {
+                throw new TokenBusinessException("User associated with the token not found");
+            }
+
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             saveUser(user);
             tokenRepository.deleteByToken(request.getToken());
         }
     }
+
 }
