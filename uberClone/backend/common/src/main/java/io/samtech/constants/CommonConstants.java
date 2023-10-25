@@ -105,4 +105,9 @@ public abstract class CommonConstants {
         public static final String TOKEN_EXPIRED = "expired";
         public static final String TOKEN_VALID = "valid";
     }
+
+    public static abstract class SecurityString {
+        public static final String AUTHORIZATION_HEADER = "Authorization";
+        public static final String BEARER_TOKEN_PREFIX = "Bearer ";
+    }
 }

@@ -18,12 +18,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static io.samtech.constants.CommonConstants.SecurityString.AUTHORIZATION_HEADER;
+import static io.samtech.constants.CommonConstants.SecurityString.BEARER_TOKEN_PREFIX;
+
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final String AUTHORIZATION_HEADER = "Authorization";
 
-    private static final String BEARER_TOKEN_PREFIX = "Bearer ";
+
+
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final TokenRepository tokenRepository;
