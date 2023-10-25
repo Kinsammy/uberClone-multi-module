@@ -2,15 +2,18 @@ package io.samtech.serviceImpl.user;
 
 import io.samtech.application.event.publisher.UserEventPublisher;
 import io.samtech.constants.CommonConstants;
+import io.samtech.dto.request.AuthenticationRequest;
 import io.samtech.dto.request.CreateUserRequest;
 import io.samtech.dto.request.RegisterUserRequest;
 import io.samtech.dto.request.ResetPasswordRequest;
+import io.samtech.dto.response.AuthenticationResponse;
 import io.samtech.entity.models.Role;
 import io.samtech.entity.models.User;
 import io.samtech.entity.rdb.Token;
 import io.samtech.exception.*;
 import io.samtech.repository.model.UserRepository;
 import io.samtech.repository.rdb.TokenRepository;
+import io.samtech.security.currentSecurity.JwtService;
 import io.samtech.serviceApi.token.ITokenService;
 import io.samtech.serviceApi.user.UserService;
 import io.samtech.utils.DataProcessor;
@@ -20,15 +23,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static io.samtech.configuration.message.Translator.eval;
 import static io.samtech.constants.CommonConstants.CommonMessages.TOKEN_VALID;
@@ -44,6 +46,8 @@ public class UserServiceImpl implements UserService {
     private final UserEventPublisher userEventPublisher;
     private final ITokenService tokenService;
     private final TokenRepository tokenRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     @Value(value = "${spring.application.secret-key}")
     private String appKey;
 
@@ -53,20 +57,21 @@ public class UserServiceImpl implements UserService {
         User createUser = createInternalUser(user);
     }
 
-
+//todo -> this method is not yet complete because after verification the token suppose to be deleted
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void verifyAccountWithToken(String token) {
         final Long userId = getUserIdFromVerifyToken(token);
-        userRepository.findUserById(userId).ifPresent(user -> {
+//        String receivedToken = tokenService.validateReceivedToken(token);
+                userRepository.findUserById(userId).ifPresent(user -> {
             if (Objects.equals(user.getEmailVerified(), CommonConstants.EntityStatus.UNVERIFIED)){
                 user.setEmailVerified(CommonConstants.EntityStatus.VERIFIED);
                 user.setLocked(CommonConstants.EntityStatus.LOCKED);
                 userRepository.save(user);
+//                tokenRepository.deleteByToken(receivedToken);
             }
             else throw new UserVerifyCodeException.Verified();
         });
-        tokenRepository.deleteByToken(token);
     }
 
 
@@ -211,6 +216,55 @@ public class UserServiceImpl implements UserService {
     @Override
     public void verifyCreatedUserEmail(String code) {
 
+    }
+
+    @Override
+    public AuthenticationResponse login(AuthenticationRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        var user = userRepository.findUserByEmail(request.getEmail())
+                .orElseThrow(UserNotExistedException::new);
+
+        var jwtToken = jwtService.generateAccessToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, jwtToken);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        return getAuthenticationResponse(jwtToken, refreshToken);
+    }
+
+    private AuthenticationResponse getAuthenticationResponse(String jwtToken, String refreshToken) {
+        return AuthenticationResponse.builder()
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    private void saveUserToken(User user, String jwtToken) {
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(CommonConstants.TokenType.BEARER)
+                .revoked(false)
+                .expired(false)
+                .build();
+        tokenRepository.save(token);
+    }
+
+    private void revokeAllUserTokens(User user) {
+        var validUserTokens = tokenRepository.findAllValidTokensByUserId(user.getId());
+        if (validUserTokens.isEmpty()){
+            return;
+        }
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
     }
 
     @Override

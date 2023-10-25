@@ -1,10 +1,8 @@
 package io.samtech.api.userController;
 
 import io.samtech.configuration.response.Response;
-import io.samtech.dto.request.CreateUserRequest;
-import io.samtech.dto.request.PasswordResetRequest;
-import io.samtech.dto.request.ResetPasswordRequest;
-import io.samtech.dto.request.UserVerifyRequest;
+import io.samtech.dto.request.*;
+import io.samtech.dto.response.AuthenticationResponse;
 import io.samtech.serviceApi.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -50,6 +48,14 @@ public class UserController {
     public Response<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request){
         userService.resetPassword(request);
         return Response.ok("app.user.password-reset-successfully");
+    }
+
+
+    @PostMapping(path="/public/login", produces = "application/json")
+    @Operation(summary = "Reset password, for all users")
+    public Response<AuthenticationResponse> login(@Valid @RequestBody AuthenticationRequest request){
+        var response = userService.login(request);
+        return Response.ok(response);
     }
 
 
