@@ -35,10 +35,11 @@ class PassengerServiceApiImplTest {
     private Long userId;
 
     private List<Passenger> passengers;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        User user =  new User();
+        user =  new User();
         userId = 1L;
         user.setId(userId);
         user.setName("Samuel");
@@ -47,10 +48,8 @@ class PassengerServiceApiImplTest {
         passengerId = 1L;
         passenger = new Passenger();
         passenger.setId(passengerId);
-        passenger.setUserId(userId);
-        passenger.setStatus(CommonConstants.EntityStatus.ENABLED);
-        passenger.setType(CommonConstants.ProfileType.PASSENGER);
-        passenger.setIsActivated(CommonConstants.EntityStatus.INACTIVE);
+        passenger.setUserDetails(user);
+
 
         Long passengerId2 = 2L;
 
@@ -63,10 +62,8 @@ class PassengerServiceApiImplTest {
         passengerId = 1L;
         Passenger passenger2 = new Passenger();
         passenger2.setId(passengerId2);
-        passenger2.setUserId(userId2);
-        passenger2.setStatus(CommonConstants.EntityStatus.ENABLED);
-        passenger2.setType(CommonConstants.ProfileType.PASSENGER);
-        passenger2.setIsActivated(CommonConstants.EntityStatus.INACTIVE);
+        passenger2.setUserDetails(user2);
+
 
         passengers = new ArrayList<>();
         passengers.add(passenger);
@@ -118,13 +115,13 @@ class PassengerServiceApiImplTest {
         when(passengerRepository.findById(savedPassenger.getId())).thenReturn(Optional.of(savedPassenger));
 
         savedPassenger.setId(savedPassenger.getId());
-        savedPassenger.setUserId(userId);
-        savedPassenger.setIsActivated(CommonConstants.EntityStatus.ACTIVE);
+        savedPassenger.setUserDetails(user);
+        savedPassenger.getUserDetails().setEmailVerified(CommonConstants.EntityStatus.VERIFIED);
 
         var updatedPassenger = passengerService.updatePassengerProfile(savedPassenger);
 
         assertEquals(savedPassenger, updatedPassenger);
-        assertEquals(savedPassenger.getIsActivated(),CommonConstants.EntityStatus.ACTIVE);
+        assertEquals(savedPassenger.getUserDetails().getEmailVerified(),CommonConstants.EntityStatus.VERIFIED);
         verify(passengerRepository, times(2)).save(updatedPassenger);
     }
 

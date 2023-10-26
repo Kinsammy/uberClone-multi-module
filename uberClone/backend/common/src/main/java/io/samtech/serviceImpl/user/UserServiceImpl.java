@@ -1,5 +1,6 @@
 package io.samtech.serviceImpl.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.samtech.application.event.publisher.UserEventPublisher;
 import io.samtech.constants.CommonConstants;
 import io.samtech.dto.request.AuthenticationRequest;
@@ -18,11 +19,14 @@ import io.samtech.serviceApi.token.ITokenService;
 import io.samtech.serviceApi.user.UserService;
 import io.samtech.utils.DataProcessor;
 import io.samtech.utils.DefaultInstance;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,10 +34,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 
 import static io.samtech.configuration.message.Translator.eval;
 import static io.samtech.constants.CommonConstants.CommonMessages.TOKEN_VALID;
+import static io.samtech.constants.CommonConstants.SecurityString.AUTHORIZATION_HEADER;
+import static io.samtech.constants.CommonConstants.SecurityString.BEARER_TOKEN_PREFIX;
 
 
 @Slf4j
@@ -235,6 +242,31 @@ public class UserServiceImpl implements UserService {
         saveUserToken(user, jwtToken);
         var refreshToken = jwtService.generateRefreshToken(user);
         return getAuthenticationResponse(jwtToken, refreshToken);
+    }
+
+    @Override
+    public void refreshToken(HttpServletRequest request,
+                             HttpServletResponse response) throws IOException {
+        final String authHeader = request.getHeader(AUTHORIZATION_HEADER);
+        final String refreshToken;
+        final String userEmail;
+        if (authHeader == null || !authHeader.startsWith(BEARER_TOKEN_PREFIX)) {
+            return;
+        }
+
+        refreshToken = authHeader.substring(7);
+        userEmail = jwtService.extractUsername(refreshToken);
+        if (userEmail != null) {
+            var user = userRepository.findUserByEmail(userEmail).orElseThrow();
+            if (jwtService.isTokenValid(refreshToken, user)) {
+                var accessToken = jwtService.generateAccessToken(user);
+                revokeAllUserTokens(user);
+                saveUserToken(user, accessToken);
+                var authResponse = getAuthenticationResponse(accessToken, refreshToken);
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+            }
+        }
     }
 
     private AuthenticationResponse getAuthenticationResponse(String jwtToken, String refreshToken) {
