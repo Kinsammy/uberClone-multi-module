@@ -1,35 +1,33 @@
 package io.samtech.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.samtech.entity.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserRequest {
+public class RegisterDriverRequest {
     private String email;
 
     private Integer gender;
 
     private int emailVerified;
-    @JsonProperty("surname")
+
     private String familyName;
 
     private String middleName;
 
     private String givenName;
     private String phoneNumber;
-    @JsonProperty("password")
     private String rawPassword;
+    private String password;
 
     @NotNull
     private Role role;
-
-
+    private MultipartFile licenseImage;
 }

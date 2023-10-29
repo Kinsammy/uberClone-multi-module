@@ -43,8 +43,18 @@ public class PassengerServiceApiImpl implements PassengerProfileServiceApi {
         if (userService.existsByPhoneNumber(request.getPhoneNumber())){
             throw new UserAlreadyExitByPhoneNumberException();
         }
+        User user = setPassengerDetails(request);
+        userService.saveUser(user);
+        Passenger passengerProfile = new Passenger();
+        passengerProfile.setUserDetails(user);
+        savePassengerProfile(passengerProfile);
+
+        userEventPublisher.publishVerificationEvent(passengerProfile.getUserDetails());
+    }
+
+    private User setPassengerDetails(CreateUserRequest request) {
         final String fullName = DataProcessor.joinWihSpaceDelimiter(request.getGivenName(), request.getMiddleName(), request.getFamilyName());
-        User user = User.builder()
+        return User.builder()
                 .name(fullName)
                 .locked(CommonConstants.EntityStatus.UNLOCKED)
                 .email(request.getEmail())
@@ -60,12 +70,6 @@ public class PassengerServiceApiImpl implements PassengerProfileServiceApi {
                 .password(passwordEncoder.encode(request.getRawPassword()))
                 .enabled(CommonConstants.EntityStatus.ENABLED)
                 .build();
-        userService.saveUser(user);
-        Passenger passengerProfile = new Passenger();
-        passengerProfile.setUserDetails(user);
-        savePassengerProfile(passengerProfile);
-
-        userEventPublisher.publishVerificationEvent(passengerProfile.getUserDetails());
     }
 
     @Override

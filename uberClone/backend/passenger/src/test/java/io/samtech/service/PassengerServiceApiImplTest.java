@@ -32,7 +32,6 @@ class PassengerServiceApiImplTest {
     private PassengerServiceApiImpl passengerService;
     private Passenger passenger;
     private Long passengerId;
-    private Long userId;
 
     private List<Passenger> passengers;
     private User user;
@@ -40,7 +39,7 @@ class PassengerServiceApiImplTest {
     @BeforeEach
     void setUp() {
         user =  new User();
-        userId = 1L;
+        Long userId = 1L;
         user.setId(userId);
         user.setName("Samuel");
         user.setEmail("fanusamuel@gmail.com");

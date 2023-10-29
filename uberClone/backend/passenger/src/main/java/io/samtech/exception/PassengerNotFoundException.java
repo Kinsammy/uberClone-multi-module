@@ -1,9 +1,11 @@
 package io.samtech.exception;
 
+import static io.samtech.configuration.message.Translator.eval;
+
 public class PassengerNotFoundException extends LogicException {
 
 
     public PassengerNotFoundException() {
-        super("app.passenger.exception.passsssenger-profile- id not found");
+        super(eval("app.exception.passenger-profile not found"));
     }
 }
