@@ -43,7 +43,7 @@ class PassengerServiceApiImplTest {
         user.setId(userId);
         user.setName("Samuel");
         user.setEmail("fanusamuel@gmail.com");
-        user.setPassword("password");
+        user.setRawPassword("password");
         passengerId = 1L;
         passenger = new Passenger();
         passenger.setId(passengerId);

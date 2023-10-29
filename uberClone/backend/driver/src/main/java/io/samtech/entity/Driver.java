@@ -7,6 +7,8 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.Set;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,9 +21,9 @@ public class Driver {
     private Long id;
     private String licenseNumber;
     private String licenseImage;
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Referee referee;
+    private Set<Referee> referees;
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private BankInformation bankInformation;
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

@@ -20,8 +20,6 @@ public class Referee {
     private String firstName;
     private String lastName;
     private String occupation;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Driver> drivers;
     private int age;
     //    @OneToOne
 //    private Address address;
