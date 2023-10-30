@@ -50,15 +50,13 @@ class PassengerServiceApiImplTest {
         passenger.setUserDetails(user);
 
 
-        Long passengerId2 = 2L;
-
         User user2 =  new User();
         Long userId2 = 2L;
         user2.setId(userId2);
         user2.setName("Ade");
         user2.setEmail("samuel@gmail.com");
         user2.setPassword("password");
-        passengerId = 1L;
+        Long passengerId2 = 2L;
         Passenger passenger2 = new Passenger();
         passenger2.setId(passengerId2);
         passenger2.setUserDetails(user2);
@@ -95,7 +93,7 @@ class PassengerServiceApiImplTest {
     }
 
     @Test
-    @DisplayName("Test should be able to get all passenger's profiles")
+    @DisplayName("Test should be able to get all passengers profiles")
     void getAllPassengerProfilesTest() {
         when(passengerRepository.findAll()).thenReturn(passengers);
         Iterable<Passenger> savedPassenger = passengerService.getAllPassengerProfiles();
@@ -113,8 +111,6 @@ class PassengerServiceApiImplTest {
 
         when(passengerRepository.findById(savedPassenger.getId())).thenReturn(Optional.of(savedPassenger));
 
-        savedPassenger.setId(savedPassenger.getId());
-        savedPassenger.setUserDetails(user);
         savedPassenger.getUserDetails().setEmailVerified(CommonConstants.EntityStatus.VERIFIED);
 
         var updatedPassenger = passengerService.updatePassengerProfile(savedPassenger);
