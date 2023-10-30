@@ -29,15 +29,14 @@ class DriverProfileServiceImplTest {
     @InjectMocks
     private DriverProfileServiceImpl driverService;
     private Driver driver;
-    private List<Driver> drivers = new ArrayList<>();
-    private User user;
+    private final List<Driver> drivers = new ArrayList<>();
     private final Set<Referee> referees = new HashSet<>();
     Long driverId = 1L;
     private BankInformation bankInformation;
 
     @BeforeEach
     void setUp() {
-        user =  new User();
+        User user = new User();
         Long userId = 1L;
         user.setId(userId);
         user.setName("Samuel");
