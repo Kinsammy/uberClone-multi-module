@@ -22,7 +22,7 @@ public class Driver {
     private String licenseNumber;
     private String licenseImage;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Referee> referees;
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private BankInformation bankInformation;

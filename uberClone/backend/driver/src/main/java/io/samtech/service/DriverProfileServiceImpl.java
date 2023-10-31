@@ -29,7 +29,7 @@ import java.util.UUID;
 public class DriverProfileServiceImpl implements DriverProfileServiceApi {
     private final DriverRepository driverRepository;
     private final UserService userService;
-    private UserEventPublisher userEventPublisher;
+    private final UserEventPublisher userEventPublisher;
     private final PasswordEncoder passwordEncoder;
     @Override
     public void registerDriver(RegisterDriverRequest request) {
@@ -46,7 +46,7 @@ public class DriverProfileServiceImpl implements DriverProfileServiceApi {
         driver.setUserDetails(user);
         saveDriverProfile(driver);
 
-        userEventPubbbbbbbbl
+        userEventPublisher.publishVerificationEvent(driver.getUserDetails());
     }
 
     private User setDriverDetails(RegisterDriverRequest request) {

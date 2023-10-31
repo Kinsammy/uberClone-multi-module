@@ -25,9 +25,8 @@ public class RegisterDriverRequest {
     private String givenName;
     private String phoneNumber;
     private String rawPassword;
-    private String password;
 
     @NotNull
     private Role role;
-    private MultipartFile licenseImage;
+//    private MultipartFile licenseImage;
 }

@@ -147,6 +147,7 @@ public class DefaultWebSecurityConfigurer {
 
     private static final String[] AUTHENTICATION_WHITELIST = {
             "/passenger/**",
+            "/driver/**",
             "/user/**",
             "/v2/api-docs",
             "/v3/api-docs",
