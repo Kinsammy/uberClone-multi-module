@@ -37,12 +37,6 @@ public class PassengerServiceApiImpl implements PassengerProfileServiceApi {
     private final PasswordEncoder passwordEncoder;
     @Override
     public void registerPassenger(CreateUserRequest request) {
-        if (userService.existsByEmail(request.getEmail())){
-            throw new UserAlreadyExistByEmailException();
-        }
-        if (userService.existsByPhoneNumber(request.getPhoneNumber())){
-            throw new UserAlreadyExitByPhoneNumberException();
-        }
         User user = setPassengerDetails(request);
         userService.saveUser(user);
         Passenger passengerProfile = new Passenger();
@@ -53,6 +47,13 @@ public class PassengerServiceApiImpl implements PassengerProfileServiceApi {
     }
 
     private User setPassengerDetails(CreateUserRequest request) {
+        if (userService.existsByEmail(request.getEmail())){
+            throw new UserAlreadyExistByEmailException();
+        }
+        if (userService.existsByPhoneNumber(request.getPhoneNumber())){
+            throw new UserAlreadyExitByPhoneNumberException();
+        }
+
         final String fullName = DataProcessor.joinWihSpaceDelimiter(request.getGivenName(), request.getMiddleName(), request.getFamilyName());
         return User.builder()
                 .name(fullName)
@@ -60,7 +61,6 @@ public class PassengerServiceApiImpl implements PassengerProfileServiceApi {
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .gender(request.getGender())
-
                 .familyName(request.getFamilyName())
                 .givenName(request.getGivenName())
                 .username(UUID.randomUUID().toString())

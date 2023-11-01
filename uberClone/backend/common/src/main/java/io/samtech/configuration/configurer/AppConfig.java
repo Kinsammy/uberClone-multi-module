@@ -1,11 +1,15 @@
 package io.samtech.configuration.configurer;
 
+import com.cloudinary.Cloudinary;
+
+import com.cloudinary.utils.ObjectUtils;
 import io.samtech.repository.model.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +29,12 @@ import java.io.IOException;
 @Configuration
 @RequiredArgsConstructor
 public class AppConfig {
+    @Value("${cloudinary.cloud.name}")
+    private String cloudName;
+    @Value("${cloudinary.api.key}")
+    private String apiKey;
+    @Value("${cloudinary.api.secret}")
+    private String apiSecret;
 
     private final UserRepository userRepository;
 
@@ -75,4 +85,15 @@ public class AppConfig {
 //    public HandlerExceptionResolver handlerExceptionResolver(){
 //        return new HandlerExceptionResolver();
 //    }
+
+    @Bean
+    public Cloudinary cloudinary(){
+        return new Cloudinary(
+                ObjectUtils.asMap(
+                        "cloud_name", cloudName,
+                        "api_key", apiKey,
+                        "api_secret", apiSecret
+                )
+        );
+    }
 }

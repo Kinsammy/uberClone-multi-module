@@ -2,6 +2,7 @@ package io.samtech.service;
 
 
 import io.samtech.application.event.publisher.UserEventPublisher;
+import io.samtech.configuration.configurer.cloudinary.ICloudService;
 import io.samtech.constants.CommonConstants;
 import io.samtech.dto.request.RegisterDriverRequest;
 import io.samtech.entity.Driver;
@@ -31,15 +32,9 @@ public class DriverProfileServiceImpl implements DriverProfileServiceApi {
     private final UserService userService;
     private final UserEventPublisher userEventPublisher;
     private final PasswordEncoder passwordEncoder;
+    private final ICloudService cloudService;
     @Override
     public void registerDriver(RegisterDriverRequest request) {
-        if (userService.existsByEmail(request.getEmail())){
-            throw new UserAlreadyExistByEmailException();
-        }
-        if (userService.existsByPhoneNumber(request.getPhoneNumber())){
-            throw new UserAlreadyExitByPhoneNumberException();
-        }
-
         User user = setDriverDetails(request);
         userService.saveUser(user);
         Driver driver = new Driver();
@@ -50,6 +45,13 @@ public class DriverProfileServiceImpl implements DriverProfileServiceApi {
     }
 
     private User setDriverDetails(RegisterDriverRequest request) {
+        if (userService.existsByEmail(request.getEmail())){
+            throw new UserAlreadyExistByEmailException();
+        }
+        if (userService.existsByPhoneNumber(request.getPhoneNumber())){
+            throw new UserAlreadyExitByPhoneNumberException();
+        }
+
         final String fullName = DataProcessor.joinWihSpaceDelimiter(request.getGivenName(), request.getMiddleName(), request.getFamilyName());
         return User.builder()
                 .name(fullName)
@@ -57,7 +59,6 @@ public class DriverProfileServiceImpl implements DriverProfileServiceApi {
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .gender(request.getGender())
-
                 .familyName(request.getFamilyName())
                 .givenName(request.getGivenName())
                 .username(UUID.randomUUID().toString())
