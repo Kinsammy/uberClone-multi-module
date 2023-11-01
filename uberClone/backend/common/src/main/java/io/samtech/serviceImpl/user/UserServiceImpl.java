@@ -33,6 +33,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.*;
@@ -117,7 +118,7 @@ public class UserServiceImpl implements UserService {
                 .givenName(user.getGivenName())
                 .username(UUID.randomUUID().toString())
                 .unsigned_name(StringUtils.stripAccents(fullName))
-                .role(user.getRole())
+                .role(Role.BASIC)
                 .rawPassword(user.getRawPassword())
                 .password(passwordEncoder.encode(user.getRawPassword()))
                 .enabled(CommonConstants.EntityStatus.ENABLED)
@@ -333,6 +334,11 @@ public class UserServiceImpl implements UserService {
             saveUser(user);
             tokenRepository.deleteByToken(request.getToken());
         }
+    }
+
+    @Override
+    public void uploadProfileImage(MultipartFile profileImage, Long userId) {
+
     }
 
 }

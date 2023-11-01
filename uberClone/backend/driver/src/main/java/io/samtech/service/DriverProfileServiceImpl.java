@@ -9,6 +9,7 @@ import io.samtech.entity.Driver;
 import io.samtech.entity.models.Role;
 import io.samtech.entity.models.User;
 import io.samtech.exception.DriverNotFoundException;
+import io.samtech.exception.ImageUploadException;
 import io.samtech.exception.UserAlreadyExistByEmailException;
 import io.samtech.exception.UserAlreadyExitByPhoneNumberException;
 import io.samtech.repository.DriverRepository;
@@ -36,9 +37,16 @@ public class DriverProfileServiceImpl implements DriverProfileServiceApi {
     @Override
     public void registerDriver(RegisterDriverRequest request) {
         User user = setDriverDetails(request);
+
+        var imageUrl = cloudService.upload(request.getLicenseImage());
+        if (imageUrl == null) {
+            throw new ImageUploadException("Could not upload license image");
+        }
+
         userService.saveUser(user);
         Driver driver = new Driver();
         driver.setUserDetails(user);
+        driver.setLicenseImage(imageUrl);
         saveDriverProfile(driver);
 
         userEventPublisher.publishVerificationEvent(driver.getUserDetails());
@@ -63,7 +71,7 @@ public class DriverProfileServiceImpl implements DriverProfileServiceApi {
                 .givenName(request.getGivenName())
                 .username(UUID.randomUUID().toString())
                 .unsigned_name(StringUtils.stripAccents(fullName))
-                .role(Role.PASSENGER)
+                .role(Role.DRIVER)
                 .rawPassword(request.getRawPassword())
                 .password(passwordEncoder.encode(request.getRawPassword()))
                 .enabled(CommonConstants.EntityStatus.ENABLED)

@@ -63,6 +63,9 @@ public class User implements UserDetails {
     private Role role;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Token> tokens;
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Address address;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return StreamEx.of(role.getAuthorities())

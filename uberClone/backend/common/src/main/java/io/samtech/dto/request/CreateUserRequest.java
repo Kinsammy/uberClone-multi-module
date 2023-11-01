@@ -14,22 +14,14 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateUserRequest {
     private String email;
-
     private Integer gender;
-
-    private int emailVerified;
     @JsonProperty("surname")
     private String familyName;
-
     private String middleName;
-
+    @JsonProperty("firstName")
     private String givenName;
     private String phoneNumber;
     @JsonProperty("password")
     private String rawPassword;
-
-    @NotNull
-    private Role role;
-
 
 }

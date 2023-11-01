@@ -1,5 +1,6 @@
 package io.samtech.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.samtech.entity.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,20 +14,14 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class RegisterDriverRequest {
     private String email;
-
     private Integer gender;
-
-    private int emailVerified;
-
+    @JsonProperty("surname")
     private String familyName;
-
     private String middleName;
-
+    @JsonProperty("firstName")
     private String givenName;
     private String phoneNumber;
+    @JsonProperty("password")
     private String rawPassword;
-
-    @NotNull
-    private Role role;
-//    private MultipartFile licenseImage;
+    private MultipartFile licenseImage;
 }
