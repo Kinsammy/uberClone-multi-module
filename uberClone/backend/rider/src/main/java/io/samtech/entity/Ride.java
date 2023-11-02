@@ -1,16 +1,17 @@
 package io.samtech.entity;
 
+import io.samtech.entity.models.Address;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
+@Builder
 public class Ride {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,6 +25,6 @@ public class Ride {
     private Driver driver;
     private String origin;
     private String destination;
-    private String pickUpTime;
-    private String dropOffTime;
+    private LocalDateTime pickUpTime;
+    private LocalDateTime dropOffTime;
 }
