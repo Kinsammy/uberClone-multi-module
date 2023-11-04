@@ -4,6 +4,7 @@ import io.samtech.constants.CommonConstants;
 import io.samtech.dto.RideResponse;
 import io.samtech.dto.request.RideRequest;
 import io.samtech.entity.Ride;
+import io.samtech.entity.models.Address;
 import io.samtech.exception.RideException;
 import io.samtech.exception.RideNotFoundException;
 import io.samtech.repository.RideRepository;
@@ -30,9 +31,17 @@ public class RideServiceImp implements RideServiceApi {
             throw new RideException(String.format("Passenger with id %d not found",request.getPassengerId() ));
         }
 
+        var  availableDrivers = driverService.findDriverByDrivingStatus();
+        var selectedDriver = driverService.selectDriver((Address) availableDrivers);
+
+        if (selectedDriver == null) {
+            throw new RideException("No available drivers found.");
+        }
+
 
         var ride = Ride.builder()
                 .passenger(foundPassenger)
+                .driver(selectedDriver)
                 .origin(request.getOrigin())
                 .destination(request.getDestination())
                 .pickUpTime(request.getPickUpTime())
@@ -51,7 +60,7 @@ public class RideServiceImp implements RideServiceApi {
         if (ride == null) {
             throw new RideException("Ride not found.");
         }
-        ride.setDestination(CommonConstants.RideStatus.RIDE_CANCELED);
+        ride.setRideStatus(CommonConstants.RideStatus.RIDE_CANCELED);
         deleteRide(ride);
         return getRideResponse("Ride canceled successfully.");
     }

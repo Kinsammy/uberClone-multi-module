@@ -30,4 +30,5 @@ public class Driver {
     @JsonUnwrapped
     private User userDetails;
     private String drivingStatus;
+
 }

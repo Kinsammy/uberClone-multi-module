@@ -24,4 +24,6 @@ public class Address {
     private String street;
     private int houseNumber;
     private String state;
+    private double latitude;
+    private double longitude;
 }
