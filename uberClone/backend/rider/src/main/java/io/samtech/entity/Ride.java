@@ -1,6 +1,6 @@
 package io.samtech.entity;
 
-import io.samtech.entity.models.Address;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +23,7 @@ public class Ride {
     @JoinColumn(name ="driver_id")
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Driver driver;
+    private String rideStatus;
     private String origin;
     private String destination;
     private LocalDateTime pickUpTime;

@@ -1,5 +1,6 @@
 package io.samtech.service;
 
+import io.samtech.constants.CommonConstants;
 import io.samtech.dto.RideResponse;
 import io.samtech.dto.request.RideRequest;
 import io.samtech.entity.Ride;
@@ -24,32 +25,40 @@ public class RideServiceImp implements RideServiceApi {
     @Override
     public RideResponse bookRide(RideRequest request) {
         var foundPassenger = passengerService.findPassengerProfileById(request.getPassengerId());
-        var foundDriver = driverService.findDriverProfileById(request.getDriverId());
 
         if (foundPassenger == null) {
             throw new RideException(String.format("Passenger with id %d not found",request.getPassengerId() ));
         }
 
-        if (foundDriver == null) {
-            throw new RideException(String.format("Driver with id %d not found", foundDriver.getId()));
-        }
 
         var ride = Ride.builder()
                 .passenger(foundPassenger)
-                .driver(foundDriver)
                 .origin(request.getOrigin())
                 .destination(request.getDestination())
                 .pickUpTime(request.getPickUpTime())
                 .dropOffTime(request.getDropOffTime())
+                .rideStatus(CommonConstants.RideStatus.REQUESTED)
                 .build();
 
-       var savedRide =  rideRepository.save(ride);
-       return getRideResponse(savedRide);
+       rideRepository.save(ride);
+       return getRideResponse("Ride booked successfully.");
     }
 
-    private RideResponse getRideResponse(Ride ride) {
+    @Override
+    public RideResponse cancelRide(Long rideId) {
+        var ride = findRideById(rideId);
+
+        if (ride == null) {
+            throw new RideException("Ride not found.");
+        }
+        ride.setDestination(CommonConstants.RideStatus.RIDE_CANCELED);
+        deleteRide(ride);
+        return getRideResponse("Ride canceled successfully.");
+    }
+
+    private RideResponse getRideResponse(String message) {
         var response = new RideResponse();
-        response.setMessage("Ride booked successfully.");
+        response.setMessage(message);
         return response;
     }
 

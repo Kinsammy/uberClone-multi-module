@@ -29,4 +29,5 @@ public class Driver {
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonUnwrapped
     private User userDetails;
+    private String drivingStatus;
 }

@@ -24,7 +24,7 @@ import javax.validation.Valid;
 public class RideController {
     private final RideServiceApi rideServiceApi;
 
-    @PostMapping(path = "/signup",  produces = "application/json")
+    @PostMapping(path = "book-ride",  produces = "application/json")
     @Operation(summary = "Passenger book ride, only for Passenger role")
     public ResponseEntity<RideResponse> bookRide(@Valid @RequestBody RideRequest request){
         var response = rideServiceApi.bookRide(request);

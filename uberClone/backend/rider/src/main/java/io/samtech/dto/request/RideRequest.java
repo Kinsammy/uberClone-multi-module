@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RideRequest {
     private Long passengerId;
-    private Long driverId;
     private String origin;
     private String destination;
     private LocalDateTime pickUpTime;

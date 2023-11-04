@@ -110,4 +110,23 @@ public abstract class CommonConstants {
         public static final String AUTHORIZATION_HEADER = "Authorization";
         public static final String BEARER_TOKEN_PREFIX = "Bearer ";
     }
+
+    public static abstract class RideStatus {
+        public static final String REQUESTED ="requested";
+        public static final String RIDE_CANCELED ="ride_canceled";
+        public static final String ACCEPT_RIDE ="accept_ride";
+        public static final String RIDE_IN_PROGRESS ="ride_in_progress";
+        public static final String RIDE_COMPLETED ="ride_completed";
+    }
+
+    public static abstract class DrivingStatus {
+        public static final String ON_BOARDED = "on_boarded";
+        public static final String AVAILABLE = "available";
+        public static final String NOT_AVAILABLE = "not_available";
+        public static final String ACCEPT_RIDE_REQUEST = "accept_ride_request";
+        public static final String DECLINE_RIDE_REQUEST = "discard_ride_request";
+        public static final String CANCEL_RIDE = "cancel_ride";
+    }
+
+
 }
